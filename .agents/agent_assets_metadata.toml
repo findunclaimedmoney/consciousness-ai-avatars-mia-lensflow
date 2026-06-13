@@ -1,0 +1,50 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "KWObs5_lXz5dIX1FD7sz6"
+uri = "file://artifacts/glimr/public/drop-ins/avatar-01.png"
+type = "image"
+title = "platinum-blonde-editorial-portrait"
+
+[[generated]]
+id = "TirNARiHu-z4d02FMgPca"
+uri = "file://artifacts/glimr/public/drop-ins/avatar-02.png"
+type = "image"
+title = "dark-hair-cinematic-portrait"
+
+[[generated]]
+id = "sBYlCXsY_GyRlepa7RIwW"
+uri = "file://artifacts/glimr/public/drop-ins/avatar-03.png"
+type = "image"
+title = "redhead-editorial-portrait"
+
+[[generated]]
+id = "3wD6U2PmKOhoo-lY80uPI"
+uri = "file://artifacts/glimr/public/drop-ins/avatar-04.png"
+type = "image"
+title = "silver-hair-executive-portrait"
+
+[[generated]]
+id = "H-PSZDIahYHr3Yv7d27Rf"
+uri = "file://artifacts/glimr/public/drop-ins/avatar-05.png"
+type = "image"
+title = "cyberpunk-female-3d-avatar"
+
+[[generated]]
+id = "emGUQdG9mz3Pt1keBkuOQ"
+uri = "file://artifacts/glimr/public/drop-ins/avatar-06.png"
+type = "image"
+title = "golden-metallic-male-3d-avatar"
+
+[[generated]]
+id = "7Uobmr-y-kJEwp3TZuB2c"
+uri = "file://artifacts/glimr/public/drop-ins/avatar-07.png"
+type = "image"
+title = "rose-gold-luxury-3d-avatar"
+
+[[generated]]
+id = "mxuuIqN3JZmyMigF2m7L6"
+uri = "file://artifacts/glimr/public/drop-ins/avatar-08.png"
+type = "image"
+title = "marble-sculptural-3d-portrait"
