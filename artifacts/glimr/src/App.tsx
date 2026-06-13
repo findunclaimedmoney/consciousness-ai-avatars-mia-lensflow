@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { StudioProvider } from "@/studio/StudioContext";
 import StudioPage from "@/pages/StudioPage";
 import BoothStripPage from "@/pages/BoothStripPage";
+import CreateGlimr from "@/pages/CreateGlimr";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -21,6 +22,9 @@ function NavBar() {
       <Link href="/booth" className="text-sm text-gray-400 hover:text-white transition-colors">
         Booth
       </Link>
+      <Link href="/create" className="text-sm text-gray-400 hover:text-white transition-colors">
+        Create
+      </Link>
     </nav>
   );
 }
@@ -33,6 +37,7 @@ function Router() {
         <Switch>
           <Route path="/" component={StudioPage} />
           <Route path="/booth" component={BoothStripPage} />
+          <Route path="/create" component={CreateGlimr} />
           <Route component={NotFound} />
         </Switch>
       </div>
