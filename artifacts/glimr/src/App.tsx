@@ -16,10 +16,13 @@ import SMSDeliveryPage from "@/pages/features/SMSDeliveryPage";
 import BoothPremiumPage from "@/pages/features/BoothPremiumPage";
 import NotFound from "@/pages/not-found";
 
+import VideoTemplate from "@/components/video/VideoTemplate";
+
 const queryClient = new QueryClient();
 
 const NAV_LINKS = [
   { href: "/", label: "Studio" },
+  { href: "/video", label: "Video" },
   { href: "/teleprompter", label: "Teleprompter" },
   { href: "/booth", label: "Booth" },
   { href: "/create", label: "Create" },
@@ -100,6 +103,7 @@ function Router() {
       <div className="pt-[49px]">
         <Switch>
           <Route path="/" component={StudioPage} />
+          <Route path="/video" component={VideoTemplate} />
           <Route path="/teleprompter" component={TeleprompterPage} />
           <Route path="/booth" component={BoothStripPage} />
           <Route path="/create" component={CreateGlimr} />
