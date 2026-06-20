@@ -1,26 +1,27 @@
 kind = "web"
-previewPath = "/missingcash/"
-title = "MissingCash"
-version = "1.0.0"
-id = "artifacts/missingcash"
-router = "path"
+  previewPath = "/"
+  title = "MissingCash"
+  version = "1.0.0"
+  id = "artifacts/missingcash"
+  router = "path"
 
-[[integratedSkills]]
-name = "react-vite"
-version = "1.0.0"
+  [[integratedSkills]]
+  name = "react-vite"
+  version = "1.0.0"
 
-[[services]]
-name = "web"
-paths = [ "/missingcash/" ]
-localPort = 23246
+  [[services]]
+  name = "web"
+  paths = [ "/" ]
+  localPort = 23246
 
-[services.development]
-run = "pnpm --filter @workspace/missingcash run dev"
+  [services.development]
+  run = "pnpm --filter @workspace/missingcash run dev"
 
-[services.production]
-publicDir = "artifacts/missingcash/public"
-serve = "static"
+  [services.production]
+  publicDir = "artifacts/missingcash/public"
+  serve = "static"
 
-[services.env]
-PORT = "23246"
-BASE_PATH = "/missingcash/"
+  [services.env]
+  PORT = "23246"
+  BASE_PATH = "/"
+  
