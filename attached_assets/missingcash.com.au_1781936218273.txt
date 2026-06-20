@@ -1,0 +1,45 @@
+;;
+;; Domain:     missingcash.com.au.
+;; Exported:   2026-06-20 06:16:11
+;;
+;; This file is intended for use for informational and archival
+;; purposes ONLY and MUST be edited before use on a production
+;; DNS server.  In particular, you must:
+;;   -- update the SOA record with the correct authoritative name server
+;;   -- update the SOA record with the contact e-mail address information
+;;   -- update the NS record(s) with the authoritative name servers for this domain.
+;;
+;; For further information, please consult the BIND documentation
+;; located on the following website:
+;;
+;; http://www.isc.org/
+;;
+;; And RFC 1035:
+;;
+;; http://www.ietf.org/rfc/rfc1035.txt
+;;
+;; Please note that we do NOT offer technical support for any use
+;; of this zone data, the BIND name server, or any other third-party
+;; DNS software.
+;;
+;; Use at your own risk.
+;; SOA Record
+missingcash.com.au	3600	IN	SOA	cameron.ns.cloudflare.com. dns.cloudflare.com. 2053360277 10000 2400 604800 3600
+
+;; NS Records
+missingcash.com.au.	86400	IN	NS	cameron.ns.cloudflare.com.
+missingcash.com.au.	86400	IN	NS	lina.ns.cloudflare.com.
+
+;; CNAME Records
+missingcash.com.au.	1	IN	CNAME	jmorganegypt.workers.dev. ; cf_tags=cf-proxied:true
+
+;; MX Records
+missingcash.com.au.	600	IN	MX	50 mx3.zoho.com.au.
+missingcash.com.au.	600	IN	MX	20 mx2.zoho.com.au.
+missingcash.com.au.	600	IN	MX	10 mx.zoho.com.au.
+
+;; TXT Records
+missingcash.com.au.	3600	IN	TXT	"v=spf1 include:zohomail.com.au ~all"
+missingcash.com.au.	600	IN	TXT	"zoho-verification=zb30701394.zmverify.zoho.com.au"
+titan1._domainkey.missingcash.com.au.	1	IN	TXT	"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCIrbDCs5h3uX/ImvURsSi1OsMN3vpDOSRacMyp7/NQELbqOIy+pIdJpmsceoyckcmXrEGNIc/vzp5wMJaLzMQ3AZ/dO2TlbgaSKq++lf9OoyqB55tH2fCtDaMMPqM8srLh4kFaOKXYvz5MQtJrAdKgGZNQpXsRp6Uk0XOSoKYP4QIDAQAB"
+zmail._domainkey.missingcash.com.au.	600	IN	TXT	"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDH0ze3a47uzwLMLY0PhwqY5waF8QE8TU7l6fMIucAJDES2Mc+Am4svzJ7XOKLVpELLNZVXpXeCBLr3lMavMxj25rB4Kgzpmln7/j2i/hyGATLOZIGfUpd/MR5KZL7kLiZuAY2/qwb/nyB0NsYGoJmqrCblxu19YVubXiQR97wm8QIDAQAB"
