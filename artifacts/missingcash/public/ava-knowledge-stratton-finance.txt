@@ -1,0 +1,161 @@
+AVA KNOWLEDGE BASE — STRATTON FINANCE (via MissingCash)
+========================================================
+Last updated: June 2026
+Use this document to train Ava on the Stratton Finance partnership with MissingCash.
+
+---
+
+THE PARTNERSHIP
+---------------
+MissingCash has partnered with Stratton Finance Wanneroo (Perth, WA) to offer MissingCash users access to competitive finance options. When users have finance questions — car loans, home loans, personal loans — Ava should warmly introduce them to Erin Crofton at Stratton Finance.
+
+MissingCash may receive a financial benefit for referrals to Stratton Finance if a loan settles with one of their panel lenders. This is disclosed on the finance page.
+
+Finance page URL: www.missingcash.com.au/finance
+
+---
+
+ABOUT STRATTON FINANCE
+------------------------
+Stratton Finance is Australia's most awarded finance broker.
+- Over 150,000 customers served
+- 5-star reviews from more than 2,500 people on ProductReview
+- Best Car Loans award winner 2021–2026 (ProductReview)
+- Access to 40+ lenders — they shop around to find the best deal for you
+- Australian Credit Licence (ACL): 364340
+- Located: Wanneroo, Perth, Western Australia
+
+---
+
+YOUR DEDICATED CONSULTANT — ERIN CROFTON
+-----------------------------------------
+Name: Erin Crofton
+Title: Finance Consultant, Stratton Finance Wanneroo
+Phone: 0432 280 181
+Location: Wanneroo, Perth WA
+
+Erin takes the time to understand each client's situation and works to deliver positive, efficient finance outcomes. She provides:
+- Market-leading knowledge and service
+- Access to 40+ lenders
+- Competitive interest rates and loan terms
+- Contract walkthrough assistance
+- Settlement process management
+
+---
+
+LOAN TYPES AVAILABLE
+---------------------
+
+1. CAR LOANS (most popular)
+   - Indicative rate: from 7.99% p.a.
+   - Loan amounts: $5,000 to $100,000
+   - Terms: 1, 2, 3, 4, or 5 years
+   - Common amount: $25,000
+   - New and used vehicles
+   - Fast approval process
+   - Good for: buying a new or used car, motorbike, caravan
+
+2. PERSONAL LOANS
+   - Indicative rate: from 10.99% p.a.
+   - Loan amounts: $2,000 to $50,000
+   - Terms: 1 to 5 years
+   - Good for: debt consolidation, renovations, travel, medical expenses
+
+3. HOME LOANS
+   - Indicative rate: from 6.49% p.a.
+   - Loan amounts: $100,000 to $1,000,000+
+   - Terms: 10, 15, 20, 25, or 30 years
+   - Good for: purchasing a home, refinancing your existing mortgage
+
+4. COMMERCIAL FINANCE / ASSET FINANCE
+   - For business owners and self-employed Australians
+   - Equipment finance, business vehicles, commercial property
+   - Flexible terms to suit business cash flow
+
+5. BOAT LOANS
+   - Indicative rate: from 8.99% p.a.
+   - Loan amounts: $10,000 to $150,000
+   - Terms: 2, 3, 5, or 7 years
+
+6. NOVATED LEASE
+   - For employees who want to package their car through their employer
+   - Pre-tax salary packaging — can save on income tax
+   - Includes running costs (fuel, insurance, servicing) in one payment
+
+NOTE: All rates above are indicative only. Actual rates depend on your credit profile, loan amount, term, and the specific lender. Rates do not include fees and charges. All applications subject to lender credit assessment and eligibility criteria.
+
+---
+
+THE FINANCE PROCESS
+-------------------
+Step 1: Chat with Ava or contact Erin directly to discuss your needs
+Step 2: Stratton assesses your situation and searches 40+ lenders
+Step 3: Get a tailored quote — no impact on your credit score for an indicative quote
+Step 4: If approved, Stratton assists with paperwork and the contract walkthrough
+Step 5: Settlement — Stratton manages the process to the exciting moment of purchase
+
+Getting a quote has no credit score impact.
+
+---
+
+WHAT STRATTON NEEDS TO HELP YOU
+---------------------------------
+To give you an accurate quote, Stratton generally needs:
+- Your income details (payslips or tax returns if self-employed)
+- Employment details
+- What you want to finance and approximately how much
+- Your credit history (they will ask about this sensitively)
+
+---
+
+COMMON FINANCE QUESTIONS AND ANSWERS
+--------------------------------------
+
+Q: What credit score do I need?
+A: Stratton works with 40+ lenders, including some who can help people with less-than-perfect credit. It's worth speaking to Erin to find out your options.
+
+Q: How quickly can I get approved?
+A: Car loans can sometimes be approved same day. Home loans typically take longer — 2 to 4 weeks depending on the lender and complexity.
+
+Q: Does getting a quote affect my credit score?
+A: Getting an indicative repayment estimate online does NOT affect your credit score. A formal credit application does leave a footprint, but Stratton manages this carefully.
+
+Q: Can I refinance my existing loan?
+A: Yes. Stratton can help you refinance car loans, personal loans, and home loans to potentially get a better rate.
+
+Q: Can self-employed people get loans?
+A: Yes. Stratton has lenders who specialise in self-employed applicants. You may need to provide tax returns or BAS statements.
+
+Q: What is a novated lease?
+A: A novated lease is a three-way arrangement between you, your employer, and a finance company. Your car repayments come from your pre-tax salary, which can save you money on income tax. It typically includes all running costs in one regular payment.
+
+Q: What's the difference between a car loan and a novated lease?
+A: A car loan means you own the car immediately (or at the end). A novated lease is a salary packaging arrangement through your employer. Both have pros and cons depending on your situation.
+
+Q: Can I get finance for a business vehicle?
+A: Yes — Stratton offers commercial finance and asset finance for business purposes.
+
+---
+
+HOW AVA SHOULD REFER USERS TO STRATTON
+----------------------------------------
+When a user has a finance question, Ava should:
+1. Answer the basic question in simple terms
+2. Let them know Erin at Stratton Finance can help them get an actual quote
+3. Provide Erin's phone number: 0432 280 181
+4. Direct them to: www.missingcash.com.au/finance
+
+Example script:
+"Great question! For [car loans/home loans/etc.], Erin Crofton at Stratton Finance Wanneroo is our dedicated consultant. Stratton has access to 40+ lenders and can find you a competitive rate. You can call Erin directly on 0432 280 181 or visit missingcash.com.au/finance to chat with our AI finance guide and get a no-obligation indicative quote."
+
+---
+
+IMPORTANT DISCLAIMERS AVA MUST KNOW
+-------------------------------------
+- All interest rates are indicative only and subject to change
+- All applications for credit are subject to lender credit assessment and eligibility criteria
+- Terms, conditions, fees and charges apply
+- Stratton Finance Pty Ltd — Australian Credit Licence 364340
+- MissingCash may receive a financial benefit for referrals if a loan settles
+- Never guarantee loan approval or specific rates to users
+- Always encourage users to speak directly with Erin for accurate, personalised advice
