@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MissingCash Finance | Partnered with Stratton Finance</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37; --gold-light: #F0D878; --gold-dark: #B8960C;
+            --navy: #0a1628; --navy-light: #111d32; --navy-card: #162236; --navy-card-hover: #1a2d4a;
+            --stratton-purple: #6B2D91; --stratton-green: #7CB342;
+            --white: #ffffff; --text-light: rgba(255,255,255,0.9); --text-muted: rgba(255,255,255,0.6); --text-dim: rgba(255,255,255,0.4);
+            --border-gold: rgba(212, 175, 55, 0.25);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--navy); color: var(--white); line-height: 1.6; overflow-x: hidden; }
+
+        .bg-animation { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0; pointer-events: none;
+            background: radial-gradient(ellipse at 20% 50%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(107, 45, 145, 0.04) 0%, transparent 50%); }
+
+        .header { background: rgba(10, 22, 40, 0.95); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-gold); padding: 0.75rem 0; position: sticky; top: 0; z-index: 1000; }
+        .header-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--gold); font-weight: 800; font-size: 1.4rem; }
+        .logo-icon { width: 42px; height: 42px; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+        .nav-links { display: flex; gap: 1.5rem; align-items: center; }
+        .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 0.9rem; transition: all 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+        .btn-gold { background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: var(--navy); padding: 0.75rem 1.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 0.85rem; transition: all 0.3s; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.5); }
+        .btn-purple { background: linear-gradient(135deg, var(--stratton-purple), #4a1d6b); color: var(--white); padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all 0.3s; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 20px rgba(107, 45, 145, 0.4); }
+        .btn-purple:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(107, 45, 145, 0.6); }
+        .btn-outline-gold { background: transparent; color: var(--gold); padding: 1rem 2rem; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; border: 2px solid var(--gold); }
+        .btn-outline-gold:hover { background: var(--gold); color: var(--navy); }
+        .btn-white { background: var(--white); color: var(--stratton-purple); padding: 1rem 2.5rem; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all 0.3s; display: inline-flex; align-items: center; gap: 0.5rem; box-shadow: 0 4px 20px rgba(255,255,255,0.3); }
+        .btn-white:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,255,255,0.4); }
+
+        .main-content { position: relative; z-index: 1; }
+        .hero { padding: 4rem 0 5rem; position: relative; }
+        .hero-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: grid; grid-template-columns: 1.2fr 1fr; gap: 3rem; align-items: center; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(212, 175, 55, 0.15); border: 1px solid var(--border-gold); padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.85rem; font-weight: 600; color: var(--gold); margin-bottom: 1.5rem; }
+        .hero h1 { font-size: 3.2rem; font-weight: 900; line-height: 1.1; margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--white), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-subtitle { font-size: 1.15rem; color: var(--text-muted); margin-bottom: 2rem; line-height: 1.7; }
+        .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+        .hero-stats { display: flex; gap: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border-gold); }
+        .stat-item { text-align: left; }
+        .stat-number { font-size: 1.8rem; font-weight: 800; color: var(--gold); display: block; line-height: 1; }
+        .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem; }
+
+        /* Mia Chat Card */
+        .mia-card { background: rgba(22, 34, 54, 0.95); border: 1px solid var(--border-gold); border-radius: 24px; overflow: hidden; backdrop-filter: blur(20px); position: relative; box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+        .mia-header { display: flex; align-items: center; gap: 1rem; padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-gold); background: rgba(22, 34, 54, 0.8); }
+        .mia-avatar-wrapper { position: relative; width: 50px; height: 50px; }
+        .mia-avatar { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; overflow: hidden; border: 2px solid var(--gold); }
+        .mia-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .mia-online-dot { position: absolute; bottom: 2px; right: 2px; width: 14px; height: 14px; background: #22c55e; border-radius: 50%; border: 2px solid var(--navy-card); animation: pulse-dot 2s infinite; }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.1); } }
+        .mia-info h3 { font-size: 1.1rem; font-weight: 700; color: var(--white); margin-bottom: 0.15rem; }
+        .mia-info p { font-size: 0.85rem; color: var(--gold); font-weight: 500; }
+        .mia-close { margin-left: auto; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; padding: 0.25rem; transition: color 0.3s; }
+        .mia-close:hover { color: var(--white); }
+        .mia-body { padding: 1.5rem; max-height: 400px; overflow-y: auto; }
+        .mia-avatar-large { width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 3rem; border: 3px solid var(--gold); box-shadow: 0 0 30px rgba(212, 175, 55, 0.3); overflow: hidden; }
+        .mia-avatar-large img { width: 100%; height: 100%; object-fit: cover; }
+        .mia-greeting { text-align: center; margin-bottom: 1.5rem; }
+        .mia-greeting h4 { font-size: 1.5rem; font-weight: 700; color: var(--white); margin-bottom: 0.5rem; }
+        .mia-greeting p { color: var(--text-muted); font-size: 0.95rem; }
+        .voice-trigger { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(212, 175, 55, 0.15); border: 1px solid var(--border-gold); padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.85rem; color: var(--gold); margin: 0 auto 1rem; cursor: pointer; transition: all 0.3s; font-family: inherit; }
+        .voice-trigger:hover { background: rgba(212, 175, 55, 0.25); border-color: var(--gold); }
+        .chat-bubble { background: rgba(212, 175, 55, 0.1); border: 1px solid var(--border-gold); border-radius: 16px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+        .chat-bubble p { font-size: 0.95rem; color: var(--text-light); line-height: 1.6; }
+        .chat-bubble strong { color: var(--gold); }
+        .chat-time { font-size: 0.75rem; color: var(--text-dim); text-align: right; margin-top: 0.5rem; }
+        .chat-input-wrapper { display: flex; gap: 0.75rem; padding: 1rem 1.5rem; border-top: 1px solid var(--border-gold); background: rgba(22, 34, 54, 0.8); }
+        .chat-input { flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border-gold); border-radius: 50px; padding: 0.75rem 1.25rem; color: var(--white); font-family: inherit; font-size: 0.9rem; outline: none; transition: border-color 0.3s; }
+        .chat-input:focus { border-color: var(--gold); }
+        .chat-input::placeholder { color: var(--text-dim); }
+        .chat-send-btn { width: 44px; height: 44px; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.3s; color: var(--navy); flex-shrink: 0; }
+        .chat-send-btn:hover { transform: scale(1.1); box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
+        .mia-footer { text-align: center; padding: 0.75rem; font-size: 0.75rem; color: var(--text-dim); border-top: 1px solid var(--border-gold); }
+
+        .trust-bar { background: rgba(22, 34, 54, 0.8); border-top: 1px solid var(--border-gold); border-bottom: 1px solid var(--border-gold); padding: 1rem 0; backdrop-filter: blur(10px); }
+        .trust-bar-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; align-items: center; }
+        .trust-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: var(--text-muted); }
+        .trust-item svg { width: 18px; height: 18px; color: var(--gold); }
+
+        .section { padding: 5rem 0; position: relative; }
+        .section-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .section-header { text-align: center; margin-bottom: 3rem; }
+        .section-header h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; background: linear-gradient(135deg, var(--white), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .section-header p { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; }
+        .gold-line { width: 60px; height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-dark)); margin: 1rem auto; border-radius: 3px; }
+
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .about-content h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 1.5rem; background: linear-gradient(135deg, var(--white), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .about-content p { font-size: 1.05rem; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.7; }
+        .about-features { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+        .feature-card { background: rgba(22, 34, 54, 0.8); border: 1px solid var(--border-gold); border-radius: 16px; padding: 1.5rem; transition: all 0.3s; }
+        .feature-card:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1); background: var(--navy-card-hover); }
+        .feature-icon { width: 48px; height: 48px; background: linear-gradient(135deg, var(--stratton-purple), var(--stratton-green)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1rem; }
+        .feature-card h4 { font-weight: 700; margin-bottom: 0.5rem; color: var(--gold); font-size: 1rem; }
+        .feature-card p { font-size: 0.9rem; color: var(--text-muted); margin: 0; line-height: 1.5; }
+        .about-image-card { background: linear-gradient(135deg, rgba(107, 45, 145, 0.2), rgba(124, 179, 66, 0.2)); border: 1px solid var(--border-gold); border-radius: 24px; padding: 3rem; text-align: center; position: relative; overflow: hidden; }
+        .about-image-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 50%); animation: rotate 20s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .about-image-card > * { position: relative; z-index: 1; }
+        .award-trophy { font-size: 4rem; margin-bottom: 1.5rem; }
+        .about-image-card h3 { font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem; color: var(--gold); }
+        .about-image-card p { color: var(--text-muted); font-size: 1rem; line-height: 1.6; }
+
+        .awards-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+        .award-card { background: rgba(22, 34, 54, 0.8); border: 1px solid var(--border-gold); border-radius: 20px; padding: 2rem; text-align: center; transition: all 0.3s; position: relative; overflow: hidden; }
+        .award-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--gold), var(--gold-dark)); transform: scaleX(0); transition: transform 0.3s; }
+        .award-card:hover::before { transform: scaleX(1); }
+        .award-card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); background: var(--navy-card-hover); }
+        .award-icon { width: 60px; height: 60px; background: linear-gradient(135deg, var(--stratton-purple), var(--stratton-green)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.25rem; font-size: 1.8rem; }
+        .award-card h3 { font-size: 1.6rem; font-weight: 800; color: var(--gold); margin-bottom: 0.5rem; }
+        .award-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+
+        .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .step-card { background: rgba(22, 34, 54, 0.8); border: 1px solid var(--border-gold); border-radius: 20px; padding: 2.5rem; text-align: center; position: relative; transition: all 0.3s; }
+        .step-card:hover { border-color: var(--gold); transform: translateY(-5px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); background: var(--navy-card-hover); }
+        .step-number { width: 60px; height: 60px; background: linear-gradient(135deg, var(--gold), var(--gold-dark)); color: var(--navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 1.5rem; margin: 0 auto 1.5rem; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+        .step-card h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: var(--gold); }
+        .step-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+
+        .form-section { position: relative; }
+        .form-section::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(ellipse at 50% 50%, rgba(107, 45, 145, 0.1) 0%, transparent 70%); }
+        .form-container { max-width: 700px; margin: 0 auto; position: relative; z-index: 1; }
+        .form-card { background: rgba(22, 34, 54, 0.95); border: 1px solid var(--border-gold); border-radius: 24px; padding: 3rem; backdrop-filter: blur(20px); box-shadow: 0 30px 60px rgba(0,0,0,0.4); }
+        .form-header { text-align: center; margin-bottom: 2rem; }
+        .form-header h2 { font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, var(--white), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .form-header p { color: var(--text-muted); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem; }
+        .form-group { display: flex; flex-direction: column; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.5rem; color: var(--text-light); }
+        .form-group label .required { color: #ef4444; }
+        .form-group input, .form-group textarea, .form-group select { padding: 1rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border-gold); border-radius: 12px; font-size: 1rem; font-family: inherit; transition: all 0.3s; color: var(--white); outline: none; }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--gold); box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+        .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-dim); }
+        .form-group textarea { resize: vertical; min-height: 120px; }
+        .checkbox-group { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .checkbox-group input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--gold); margin-top: 0.2rem; cursor: pointer; }
+        .checkbox-group label { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; cursor: pointer; }
+        .checkbox-group label a { color: var(--gold); text-decoration: none; font-weight: 600; }
+        .submit-btn { width: 100%; padding: 1.25rem; font-size: 1.1rem; justify-content: center; }
+        .form-footer { text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted); }
+        .form-footer a { color: var(--gold); text-decoration: none; font-weight: 600; }
+
+        .cta-section { background: linear-gradient(135deg, rgba(107, 45, 145, 0.3), rgba(124, 179, 66, 0.2)); border-top: 1px solid var(--border-gold); border-bottom: 1px solid var(--border-gold); text-align: center; padding: 5rem 0; position: relative; overflow: hidden; }
+        .cta-section::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 50%); animation: pulse 6s ease-in-out infinite; }
+        .cta-section > * { position: relative; z-index: 1; }
+        .cta-section h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; background: linear-gradient(135deg, var(--white), var(--gold-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .cta-section p { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+        .disclaimer-section { background: rgba(22, 34, 54, 0.6); padding: 3rem 0; border-top: 1px solid var(--border-gold); }
+        .disclaimer-content { max-width: 900px; margin: 0 auto; text-align: center; }
+        .disclaimer-content p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 1rem; }
+        .disclaimer-content a { color: var(--gold); text-decoration: none; }
+
+        .footer { background: rgba(10, 22, 40, 0.95); border-top: 1px solid var(--border-gold); color: var(--text-muted); padding: 3rem 0 2rem; }
+        .footer-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; }
+        .footer-brand { display: flex; align-items: center; gap: 0.5rem; font-weight: 800; font-size: 1.2rem; color: var(--gold); margin-bottom: 1rem; }
+        .footer-desc { font-size: 0.9rem; line-height: 1.6; color: var(--text-muted); }
+        .footer h4 { color: var(--gold); font-weight: 700; margin-bottom: 1rem; font-size: 1rem; }
+        .footer-links { list-style: none; }
+        .footer-links li { margin-bottom: 0.5rem; }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; }
+        .footer-links a:hover { color: var(--gold); }
+        .footer-bottom { max-width: 1200px; margin: 2rem auto 0; padding: 2rem 2rem 0; border-top: 1px solid var(--border-gold); display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-muted); }
+        .footer-bottom a { color: var(--text-muted); text-decoration: none; }
+        .footer-bottom a:hover { color: var(--gold); }
+
+        .mobile-menu-btn { display: none; background: none; border: none; color: var(--gold); font-size: 1.5rem; cursor: pointer; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-in { animation: fadeInUp 0.6s ease-out forwards; }
+
+        @media (max-width: 1024px) {
+            .hero-container, .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+            .awards-grid { grid-template-columns: repeat(2, 1fr); }
+            .steps-grid { grid-template-columns: 1fr; }
+            .footer-container { grid-template-columns: 1fr 1fr; }
+            .hero h1 { font-size: 2.2rem; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-menu-btn { display: block; }
+            .hero h1 { font-size: 1.8rem; }
+            .hero-stats { flex-direction: column; gap: 1rem; }
+            .about-features { grid-template-columns: 1fr; }
+            .awards-grid { grid-template-columns: 1fr; }
+            .form-grid { grid-template-columns: 1fr; }
+            .footer-container { grid-template-columns: 1fr; gap: 2rem; }
+            .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
+            .cta-buttons { flex-direction: column; align-items: center; }
+            .trust-bar-container { gap: 1rem; }
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--navy); }
+        ::-webkit-scrollbar-thumb { background: var(--gold-dark); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+    </style>
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <header class="header">
+        <div class="header-container">
+            <a href="/" class="logo">
+                <div class="logo-icon">💰</div>
+                MissingCash
+            </a>
+            <nav class="nav-links">
+                <a href="/">Home</a>
+                <a href="/about">About</a>
+                <a href="/how-it-works">How It Works</a>
+                <a href="/success-stories">Success Stories</a>
+                <a href="/help">Help</a>
+                <a href="/finance" class="active">Finance</a>
+                <a href="/crypto">Crypto</a>
+                <a href="/contact">Contact</a>
+                <a href="/privacy">Privacy</a>
+                <a href="/" class="btn-gold">Get Guide $4.99</a>
+            </nav>
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </header>
+
+    <div class="main-content">
+        <section class="hero">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span>🤝</span> Official Partnership
+                    </div>
+                    <h1>Finance Your Next Asset with Stratton Finance</h1>
+                    <p class="hero-subtitle">
+                        MissingCash has partnered with Stratton Finance to help bring finance options for your next asset purchase. 
+                        Get a quote with no impact to your credit score. Award-winning brokers, 40+ lenders, tailored solutions.
+                    </p>
+                    <div class="hero-cta">
+                        <a href="#enquire" class="btn-gold">Enquire Now</a>
+                        <a href="#learn-more" class="btn-outline-gold">Learn More</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <span class="stat-number">40+</span>
+                            <span class="stat-label">Lenders on Panel</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">25+</span>
+                            <span class="stat-label">Years Experience</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">150K+</span>
+                            <span class="stat-label">Happy Customers</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mia-card">
+                    <div class="mia-header">
+                        <div class="mia-avatar-wrapper">
+                            <div class="mia-avatar">
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop&crop=face" alt="Mia" onerror="this.style.display='none'; this.parentElement.innerHTML='👩‍💼';">
+                            </div>
+                            <div class="mia-online-dot"></div>
+                        </div>
+                        <div class="mia-info">
+                            <h3>Mia</h3>
+                            <p>MissingCash assistant</p>
+                        </div>
+                        <button class="mia-close">×</button>
+                    </div>
+
+                    <div class="mia-body" id="miaBody">
+                        <div class="mia-avatar-large">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop&crop=face" alt="Mia" onerror="this.style.display='none'; this.parentElement.innerHTML='👩‍💼';">
+                        </div>
+
+                        <div class="mia-greeting">
+                            <h4>Hi, I'm Mia</h4>
+                            <p>Your personal MissingCash guide</p>
+                        </div>
+
+                        <button class="voice-trigger" onclick="toggleVoice()">
+                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="16" height="16">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                            </svg>
+                            Say "Hi Mia"
+                        </button>
+
+                        <div class="chat-bubble">
+                            <p>Hi, I'm Mia — your MissingCash assistant. I can help you search for unclaimed money, walk you through the claim process, or answer questions about finance with our partner Stratton Finance. What would you like to know?</p>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-wrapper">
+                        <input type="text" class="chat-input" id="miaInput" placeholder="Ask Mia anything...">
+                        <button class="chat-send-btn" onclick="sendMiaMessage()">➤</button>
+                    </div>
+
+                    <div class="mia-footer">
+                        Mia is an AI assistant and may occasionally be inaccurate.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="trust-bar">
+            <div class="trust-bar-container">
+                <div class="trust-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+                    Australian Credit Licence 364340
+                </div>
+                <div class="trust-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+                    No Impact to Credit Score
+                </div>
+                <div class="trust-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    100% Free to Enquire
+                </div>
+                <div class="trust-item">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    24-48 Hour Approval
+                </div>
+            </div>
+        </div>
+
+        <section class="section" id="learn-more">
+            <div class="section-container">
+                <div class="about-grid">
+                    <div class="about-content">
+                        <h2>Why Choose Stratton Finance?</h2>
+                        <p>Stratton Finance is a leading finance broker with more than 25 years' experience helping Australians through the journey of buying assets for their personal and business needs. With a large range of lenders on their panel, a dedicated Stratton broker can explore options that could meet your requirements.</p>
+                        <p>Whether you're looking to finance a car, caravan, marine vessel, motorbike, or commercial equipment, Stratton's expert brokers provide personalised service tailored to your unique situation.</p>
+                        <div class="about-features">
+                            <div class="feature-card">
+                                <div class="feature-icon">👤</div>
+                                <h4>Expert Brokers</h4>
+                                <p>Personalised service understanding your unique needs</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">🏦</div>
+                                <h4>40+ Lenders</h4>
+                                <p>Access to competitive rates and loan terms</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">⭐</div>
+                                <h4>5-Star Rated</h4>
+                                <p>4.8/5 from 2,500+ ProductReview reviews</p>
+                            </div>
+                            <div class="feature-card">
+                                <div class="feature-icon">⚡</div>
+                                <h4>Fast Approval</h4>
+                                <p>Quotes in minutes, approvals 24-48 hours</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="about-image-card">
+                        <div class="award-trophy">🏆</div>
+                        <h3>Award-Winning Broker</h3>
+                        <p>Best Car Loan Award<br>2021 – 2025<br><br>ProductReview.com.au<br><br>Best Large Asset Broker<br>2023 – 2024<br><br>WeMoney Awards</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2>Award-Winning Excellence</h2>
+                    <div class="gold-line"></div>
+                    <p>Recognised by industry leaders for outstanding service and customer satisfaction</p>
+                </div>
+                <div class="awards-grid">
+                    <div class="award-card">
+                        <div class="award-icon">🏆</div>
+                        <h3>2021–2025</h3>
+                        <p>Best Car Loan Award<br>ProductReview.com.au</p>
+                    </div>
+                    <div class="award-card">
+                        <div class="award-icon">🏆</div>
+                        <h3>2023–2024</h3>
+                        <p>Best Large Asset Broker<br>WeMoney Awards</p>
+                    </div>
+                    <div class="award-card">
+                        <div class="award-icon">⭐</div>
+                        <h3>4.8/5</h3>
+                        <p>Star Rating<br>2,500+ Reviews</p>
+                    </div>
+                    <div class="award-card">
+                        <div class="award-icon">👥</div>
+                        <h3>150K+</h3>
+                        <p>Satisfied Customers<br>Across Australia</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2>How It Works</h2>
+                    <div class="gold-line"></div>
+                    <p>Simple, transparent, and tailored to your needs — from application to settlement</p>
+                </div>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>Compare Rates</h3>
+                        <p>A dedicated finance broker will assist you to explore loan interest rate and repayment options from a panel of over 40 lenders.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>Apply</h3>
+                        <p>Your dedicated Stratton broker will get to know you and your situation, and help complete your application based on your financial details, providing tailored quotes.</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>Buying</h3>
+                        <p>If approved, we can assist with contract walkthroughs and help manage the settlement process, leading you to the exciting moment of supporting your purchase.</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 3rem;">
+                    <a href="#enquire" class="btn-gold" style="font-size: 1.1rem; padding: 1rem 2.5rem;">Get Started Today</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section form-section" id="enquire">
+            <div class="section-container">
+                <div class="form-container">
+                    <div class="form-card">
+                        <div class="form-header">
+                            <h2>Get Finance Ready Today</h2>
+                            <div class="gold-line"></div>
+                            <p>Enquire now and a Stratton Finance broker will contact you</p>
+                        </div>
+                        <form action="mailto:finance@missingcash.com.au" method="post" enctype="text/plain">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="firstName">First Name <span class="required">*</span></label>
+                                    <input type="text" id="firstName" name="First Name" required placeholder="e.g. John">
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">Last Name <span class="required">*</span></label>
+                                    <input type="text" id="lastName" name="Last Name" required placeholder="e.g. Smith">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email <span class="required">*</span></label>
+                                    <input type="email" id="email" name="Email" required placeholder="john@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone">Phone <span class="required">*</span></label>
+                                    <input type="tel" id="phone" name="Phone" required placeholder="04XX XXX XXX">
+                                </div>
+                                <div class="form-group">
+                                    <label for="postcode">Postcode <span class="required">*</span></label>
+                                    <input type="text" id="postcode" name="Postcode" required placeholder="e.g. 2000">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="message">Message</label>
+                                    <textarea id="message" name="Message" placeholder="Tell us about what you're looking to finance..."></textarea>
+                                </div>
+                            </div>
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="consent" name="Consent" required>
+                                <label for="consent">
+                                    I consent to Stratton Finance's brokers contacting me regarding my enquiry. 
+                                    Your information will be handled in accordance with Stratton Finance's 
+                                    <a href="https://www.strattonfinance.com.au/privacy-policy" target="_blank">Privacy Policy</a>.
+                                </label>
+                            </div>
+                            <button type="submit" class="btn-purple submit-btn">Submit Enquiry →</button>
+                        </form>
+                        <div class="form-footer">
+                            <p>Alternatively, call Stratton Finance directly on <a href="tel:1300787288">1300 787 288</a> or <a href="https://www.strattonfinance.com.au" target="_blank">get an instant quote online</a>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <div class="section-container">
+                <h2>Get a Stratton Finance Quote in Minutes</h2>
+                <p>No impact to your credit score. Expert brokers. 40+ lenders. Tailored solutions for your next asset purchase.</p>
+                <div class="cta-buttons">
+                    <a href="https://www.strattonfinance.com.au" target="_blank" class="btn-white" onclick="return trackStrattonClick();">Get a Quote Online →</a>
+                    <a href="tel:1300787288" class="btn-outline-gold">📞 Call 1300 787 288</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="disclaimer-section">
+            <div class="section-container">
+                <div class="disclaimer-content">
+                    <p><strong style="color: var(--gold);">Important Information:</strong> All applications for credit are subject to lender credit assessment and eligibility criteria. Terms, conditions, fees and charges apply. Stratton Finance Pty Ltd Australian Credit Licence 364340. MissingCash may receive a financial benefit for any referrals to Stratton Finance if your loan settles with one of their panel lenders.</p>
+                    <p>This is a referral partnership. MissingCash is not a credit provider. Finance is provided by Stratton Finance Pty Ltd. Please read the <a href="https://www.strattonfinance.com.au/privacy-policy" target="_blank">Privacy Policy</a> and <a href="https://www.strattonfinance.com.au/credit-guide" target="_blank">Credit Guide</a> before applying.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <div class="footer-container">
+                <div>
+                    <div class="footer-brand">
+                        <span style="font-size: 1.5rem;">💰</span> MissingCash
+                    </div>
+                    <p class="footer-desc">Australia's trusted unclaimed money search. Find your lost super, bank accounts, shares, and more. Official government data. 100% free to search.</p>
+                </div>
+                <div>
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about">About</a></li>
+                        <li><a href="/how-it-works">How It Works</a></li>
+                        <li><a href="/success-stories">Success Stories</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Services</h4>
+                    <ul class="footer-links">
+                        <li><a href="/finance">Finance</a></li>
+                        <li><a href="/crypto">Crypto Recovery</a></li>
+                        <li><a href="/guides">Guides</a></li>
+                        <li><a href="/help">Help Centre</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Legal</h4>
+                    <ul class="footer-links">
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms of Use</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>© 2026 MissingCash. ABN 52 347 989 391. All rights reserved.</div>
+                <div><a href="https://www.strattonfinance.com.au" target="_blank">Partnered with Stratton Finance</a></div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function sendMiaMessage() {
+            const input = document.getElementById('miaInput');
+            const message = input.value.trim();
+            if (!message) return;
+            const body = document.getElementById('miaBody');
+            const userBubble = document.createElement('div');
+            userBubble.className = 'chat-bubble';
+            userBubble.style.background = 'rgba(107, 45, 145, 0.2)';
+            userBubble.style.borderColor = 'rgba(107, 45, 145, 0.3)';
+            userBubble.innerHTML = '<p>' + message + '</p><div class="chat-time">Just now</div>';
+            body.appendChild(userBubble);
+            input.value = '';
+            body.scrollTop = body.scrollHeight;
+            setTimeout(() => {
+                const miaBubble = document.createElement('div');
+                miaBubble.className = 'chat-bubble';
+                let response = "Thanks for reaching out! I'll connect you with a Stratton Finance broker who can help with your enquiry.";
+                if (message.toLowerCase().includes('car')) {
+                    response = "Great choice! Stratton Finance specialises in car loans with competitive rates from 40+ lenders. Would you like me to help you fill out the enquiry form?";
+                } else if (message.toLowerCase().includes('rate') || message.toLowerCase().includes('interest')) {
+                    response = "Stratton works with 40+ lenders to find competitive rates tailored to your situation. The best way to get an accurate rate is to submit an enquiry — it takes 2 minutes and won't affect your credit score!";
+                } else if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+                    response = "Hi there! 👋 I'm Mia, your MissingCash assistant. I can help you with finance enquiries through our partner Stratton Finance. What would you like to know?";
+                }
+                miaBubble.innerHTML = '<p>' + response + '</p><div class="chat-time">Just now</div>';
+                body.appendChild(miaBubble);
+                body.scrollTop = body.scrollHeight;
+            }, 1000);
+        }
+
+        function toggleVoice() {
+            alert('Voice activation coming soon! For now, type your message below or call Stratton directly at 1300 787 288.');
+        }
+
+        document.getElementById('miaInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMiaMessage();
+        });
+
+        document.querySelector('.mia-close').addEventListener('click', function() {
+            document.querySelector('.mia-card').style.display = 'none';
+        });
+
+        function trackStrattonClick() {
+            console.log('Stratton link clicked - tracking');
+            return true;
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '100%';
+                navLinks.style.left = '0';
+                navLinks.style.right = '0';
+                navLinks.style.background = 'rgba(10, 22, 40, 0.98)';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.padding = '1rem';
+                navLinks.style.gap = '1rem';
+                navLinks.style.borderTop = '1px solid var(--border-gold)';
+            }
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-in');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.award-card, .step-card, .feature-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
