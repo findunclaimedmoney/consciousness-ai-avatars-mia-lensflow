@@ -13,6 +13,11 @@ export const MiaChatBody = z.object({
 });
 export type MiaChatBody = z.infer<typeof MiaChatBody>;
 
+export const MiaTtsBody = z.object({
+  text: z.string().min(1).max(5000),
+});
+export type MiaTtsBody = z.infer<typeof MiaTtsBody>;
+
 export const AlertsSubscribeBody = z.object({
   email: z.string().email(),
   firstName: z.string().optional(),
