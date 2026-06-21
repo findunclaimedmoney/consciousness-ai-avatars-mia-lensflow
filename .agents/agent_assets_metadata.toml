@@ -131,3 +131,9 @@ id = "Ya9m0lqICQ1v0b9Jypt_7"
 uri = "file://artifacts/missingcash/public/cloudflare-worker.txt"
 type = "text"
 title = "Cloudflare Worker — updated (fixed)"
+
+[[outputs]]
+id = "JazSWlJAO8E1YkT1aoUZA"
+uri = "file://artifacts/missingcash/public/stratton-logo.png"
+type = "image"
+title = "Stratton Finance Logo"
