@@ -57,6 +57,10 @@ An Australian unclaimed-money search service: helps people find money held by th
 
 _Populate as you build — explicit user instructions worth remembering across sessions._
 
+## Integrations
+
+- **HeyGen** — Mia's voice ID: `05f1da4dc12744c087dace9e0651a6e0`
+
 ## Gotchas
 
 - Finance.tsx was truncated in the original file upload (320 lines, cut mid-JSX). If rebuilding, reconstruct manually.

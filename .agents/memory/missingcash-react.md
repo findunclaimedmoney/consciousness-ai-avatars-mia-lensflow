@@ -22,6 +22,10 @@ description: Notes on converting missingcash from static HTML to React/Vite app.
 - GA4: G-1LLNFV2MEQ (in index.html)
 - `src/pages/Finance.tsx` line 1 had `4q` corruption removed; file was also truncated at line 320 mid-JSX — reconstructed with loan calculator + enquiry form sections
 
+## Integrations
+
+- HeyGen voice ID for Mia: `05f1da4dc12744c087dace9e0651a6e0`
+
 **Sharp edges:**
 - Finance.tsx was truncated in the user's upload — always check Finance page if rebuilding
 - `mia-avatar.png` exists in public/ (903×899 PNG, real headshot); MiaChat AVATAR points to it. AVATAR_VIDEOS use `mia-talk.mp4` + `mia.mp4`
