@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ava — Video 3 — Crypto Recovery</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:390px;height:844px;background:#061826;font-family:'Nunito',sans-serif;overflow:hidden;position:relative;}
+.bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 10%,#0d1a2e 0%,#061826 70%);}
+.gp{position:absolute;width:3px;height:3px;border-radius:50%;animation:gf linear infinite;opacity:0;}
+@keyframes gf{0%{transform:translateY(860px);opacity:0;}8%{opacity:1;}90%{opacity:0.4;}100%{transform:translateY(-10px);opacity:0;}}
+#site-logo{position:fixed;top:14px;left:18px;font-family:'Bebas Neue',sans-serif;font-size:15px;color:rgba(245,185,66,0.5);letter-spacing:0.1em;z-index:999;}
+#prog-bar{position:fixed;bottom:280px;left:0;right:0;height:3px;background:rgba(245,185,66,0.15);z-index:20;}
+#prog-fill{height:100%;background:linear-gradient(90deg,#f5b942,#e8a020);width:0%;transition:width 0.08s linear;}
+
+/* AVA */
+#ava-zone{position:absolute;bottom:0;left:0;right:0;height:280px;z-index:5;}
+.ava-glow{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:300px;height:120px;background:radial-gradient(ellipse,rgba(245,185,66,0.12) 0%,transparent 70%);border-radius:50%;}
+.ava-placeholder{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:220px;height:260px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
+.ava-hint{background:rgba(245,185,66,0.08);border:2px dashed rgba(245,185,66,0.3);border-radius:20px;padding:16px 24px;text-align:center;font-size:12px;color:rgba(245,185,66,0.5);line-height:1.6;margin-bottom:8px;}
+.ava-label{background:linear-gradient(135deg,#f5b942,#e8a020);border-radius:20px;padding:5px 16px;font-size:11px;font-weight:800;color:#000;letter-spacing:0.05em;}
+
+/* SCENES */
+.scene{position:absolute;top:20px;left:18px;right:18px;opacity:0;transition:opacity 0.5s;}
+.scene.show{opacity:1;}
+@keyframes si{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+@keyframes pop{from{opacity:0;transform:scale(0.7);}to{opacity:1;transform:scale(1);}}
+@keyframes slide-l{from{opacity:0;transform:translateX(-50px);}to{opacity:1;transform:translateX(0);}}
+
+/* S1 — Hook */
+#s1 .hook-wrap{text-align:center;padding-top:10px;}
+#s1 .hook-emoji{font-size:52px;animation:pop 0.5s 0.3s both;}
+#s1 .hook-title{font-family:'Bebas Neue',sans-serif;font-size:50px;color:#fff;line-height:1.05;margin-top:12px;animation:si 0.5s 0.6s both;}
+#s1 .hook-title .gold{color:#f5b942;}
+#s1 .hook-sub{font-size:15px;color:#7a9ab5;margin-top:10px;line-height:1.55;animation:si 0.4s 0.9s both;}
+#s1 .hook-sub .w{color:#dde8f5;font-weight:800;}
+
+/* S2 — Platforms */
+#s2 .plat-title{font-family:'Bebas Neue',sans-serif;font-size:32px;color:#fff;margin-bottom:14px;animation:si 0.4s 0.2s both;}
+#s2 .plat-title .gold{color:#f5b942;}
+.plat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.plat-card{background:rgba(11,42,61,0.9);border:1px solid #1a3a52;border-radius:14px;padding:14px 12px;text-align:center;transform:scale(0.8);opacity:0;transition:all 0.4s;}
+.plat-card.in{transform:scale(1);opacity:1;}
+.plat-card.hl{border-color:rgba(245,185,66,0.3);background:rgba(245,185,66,0.04);}
+.plat-icon{font-size:26px;margin-bottom:6px;}
+.plat-name{font-size:13px;font-weight:800;color:#dde8f5;}
+.plat-sub{font-size:11px;color:#7a9ab5;margin-top:3px;}
+
+/* S3 — Warning vs Safe */
+#s3 .warn-title{font-family:'Bebas Neue',sans-serif;font-size:30px;color:#fff;margin-bottom:12px;animation:si 0.4s 0.2s both;}
+.warn-box{background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.35);border-radius:14px;padding:14px 16px;margin-bottom:10px;transform:translateX(-50px);opacity:0;transition:all 0.45s;}
+.warn-box.in{transform:translateX(0);opacity:1;}
+.warn-top{font-size:13px;font-weight:900;color:#f87171;margin-bottom:6px;}
+.warn-txt{font-size:13px;color:#dde8f5;line-height:1.5;}
+.safe-box{background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.3);border-radius:14px;padding:14px 16px;transform:translateX(-50px);opacity:0;transition:all 0.45s;}
+.safe-box.in{transform:translateX(0);opacity:1;}
+.safe-top{font-size:13px;font-weight:900;color:#00e676;margin-bottom:6px;}
+.safe-txt{font-size:13px;color:#dde8f5;line-height:1.5;}
+
+/* S4 — CTA */
+#s4 .cta-h{font-family:'Bebas Neue',sans-serif;font-size:46px;color:#fff;line-height:1.05;animation:si 0.5s 0.2s both;}
+#s4 .cta-h .gold{color:#f5b942;}
+#s4 .cta-covers{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 16px;animation:si 0.4s 0.5s both;}
+.cover-chip{background:rgba(245,185,66,0.1);border:1px solid rgba(245,185,66,0.25);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:800;color:#f5b942;}
+#s4 .cta-btn{background:linear-gradient(135deg,#f5b942,#e8a020);border-radius:50px;padding:18px;font-family:'Bebas Neue',sans-serif;font-size:26px;color:#000;text-align:center;display:block;animation:pop 0.6s 0.7s both;box-shadow:0 8px 32px rgba(245,185,66,0.35);}
+#s4 .cta-url{font-size:13px;color:rgba(245,185,66,0.6);text-align:center;margin-top:10px;animation:si 0.4s 1s both;letter-spacing:0.08em;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div id="site-logo">MISSINGCASH.COM.AU</div>
+<div id="prog-bar"><div id="prog-fill"></div></div>
+
+<div id="s1" class="scene">
+  <div class="hook-wrap">
+    <div class="hook-emoji">🔐</div>
+    <div class="hook-title">Lost Access<br>to Your<br><span class="gold">Crypto?</span></div>
+    <div class="hook-sub">Don't panic — and <span class="w">never pay upfront fees</span> to recover it. There IS a legitimate way back.</div>
+  </div>
+</div>
+
+<div id="s2" class="scene">
+  <div class="plat-title">We Cover Every<br><span class="gold">Major Platform</span></div>
+  <div class="plat-grid">
+    <div class="plat-card hl" id="pc1"><div class="plat-icon">🟡</div><div class="plat-name">CoinSpot</div><div class="plat-sub">Lost 2FA / access</div></div>
+    <div class="plat-card" id="pc2"><div class="plat-icon">🔶</div><div class="plat-name">Binance</div><div class="plat-sub">Account locked</div></div>
+    <div class="plat-card" id="pc3"><div class="plat-icon">🔵</div><div class="plat-name">Coinbase</div><div class="plat-sub">Forgotten password</div></div>
+    <div class="plat-card" id="pc4"><div class="plat-icon">⚡</div><div class="plat-name">Swyftx</div><div class="plat-sub">Identity issues</div></div>
+    <div class="plat-card" id="pc5"><div class="plat-icon">🔷</div><div class="plat-name">Ledger / Trezor</div><div class="plat-sub">Seed phrase recovery</div></div>
+    <div class="plat-card" id="pc6"><div class="plat-icon">💀</div><div class="plat-name">Closed Exchange</div><div class="plat-sub">Platform shut down</div></div>
+  </div>
+</div>
+
+<div id="s3" class="scene">
+  <div class="warn-title">⚠️ Know the Difference</div>
+  <div class="warn-box" id="wb1">
+    <div class="warn-top">❌ SCAM — NEVER DO THIS</div>
+    <div class="warn-txt">Pay upfront fees, share your seed phrase, or use "crypto recovery services" online. This is always fraud.</div>
+  </div>
+  <div class="safe-box" id="wb2">
+    <div class="safe-top">✅ THE REAL WAY</div>
+    <div class="safe-txt">Contact the exchange directly through official channels with verified ID. Free. Legitimate. Step-by-step — we show you exactly how.</div>
+  </div>
+</div>
+
+<div id="s4" class="scene">
+  <div class="cta-h">Recover Your<br><span class="gold">Crypto</span><br>The Right Way</div>
+  <div class="cta-covers">
+    <div class="cover-chip">CoinSpot</div>
+    <div class="cover-chip">Binance</div>
+    <div class="cover-chip">Coinbase</div>
+    <div class="cover-chip">Swyftx</div>
+    <div class="cover-chip">Hardware Wallets</div>
+    <div class="cover-chip">Closed Exchanges</div>
+  </div>
+  <div class="cta-btn">🔐 Get Crypto Recovery Guide</div>
+  <div class="cta-url">missingcash.com.au — $29.90</div>
+</div>
+
+<div id="ava-zone">
+  <div class="ava-glow"></div>
+  <div class="ava-placeholder">
+    <div class="ava-hint">📌 Place Ava here<br>Export from HeyGen/Pipio<br>as transparent PNG/MP4</div>
+    <div class="ava-label">AVA — MissingCash AI</div>
+  </div>
+</div>
+
+<script>
+const cols=['#f5b942','#dde8f5','#00e676'];
+for(let i=0;i<14;i++){
+  const p=document.createElement('div');p.className='gp';
+  p.style.cssText=`left:${Math.random()*390}px;background:${cols[Math.floor(Math.random()*3)]};animation-duration:${8+Math.random()*9}s;animation-delay:${Math.random()*8}s;`;
+  document.body.appendChild(p);
+}
+let pv=0,pt=0;const pf=document.getElementById('prog-fill');
+setInterval(()=>{if(pv<pt){pv+=0.4;pf.style.width=pv+'%';}},50);
+function show(id){document.getElementById(id).classList.add('show');}
+function hide(id){document.getElementById(id).classList.remove('show');}
+const scenes=[
+  {dur:5000,start(){pt=22;show('s1');}},
+  {dur:6000,start(){
+    pt=48;hide('s1');
+    setTimeout(()=>{show('s2');
+      const cards=['pc1','pc2','pc3','pc4','pc5','pc6'];
+      cards.forEach((id,i)=>setTimeout(()=>document.getElementById(id).classList.add('in'),200+i*200));
+    },400);
+  }},
+  {dur:5500,start(){
+    pt=74;hide('s2');
+    ['pc1','pc2','pc3','pc4','pc5','pc6'].forEach(id=>document.getElementById(id).classList.remove('in'));
+    setTimeout(()=>{show('s3');
+      setTimeout(()=>document.getElementById('wb1').classList.add('in'),400);
+      setTimeout(()=>document.getElementById('wb2').classList.add('in'),900);
+    },400);
+  }},
+  {dur:6000,start(){
+    pt=100;hide('s3');
+    ['wb1','wb2'].forEach(id=>document.getElementById(id).classList.remove('in'));
+    setTimeout(()=>show('s4'),400);
+  }}
+];
+let cur=0;
+function run(i){
+  if(i>=scenes.length){setTimeout(()=>{pv=0;pt=0;pf.style.width='0%';['s1','s2','s3','s4'].forEach(hide);['pc1','pc2','pc3','pc4','pc5','pc6','wb1','wb2'].forEach(id=>document.getElementById(id).classList.remove('in'));setTimeout(()=>run(0),600);},3000);return;}
+  scenes[i].start();setTimeout(()=>run(i+1),scenes[i].dur);
+}
+setTimeout(()=>run(0),800);
+</script>
+</body>
+</html>

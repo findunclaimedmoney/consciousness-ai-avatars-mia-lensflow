@@ -44,11 +44,18 @@ createServer(async (req, res) => {
       return;
     }
 
-    const body = await readFile(file);
-    res.writeHead(200, {
-      'content-type': types[extname(file).toLowerCase()] || 'application/octet-stream',
-      'cache-control': 'no-cache',
-    });
+    let body;
+    let contentType;
+    try {
+      body = await readFile(file);
+      contentType = types[extname(file).toLowerCase()] || 'application/octet-stream';
+    } catch {
+      // Try appending .html for extensionless paths
+      const htmlFile = file + '.html';
+      body = await readFile(htmlFile);
+      contentType = 'text/html; charset=utf-8';
+    }
+    res.writeHead(200, { 'content-type': contentType, 'cache-control': 'no-cache' });
     res.end(body);
   } catch {
     res.writeHead(404, { 'content-type': 'text/plain' }).end('404 not found');

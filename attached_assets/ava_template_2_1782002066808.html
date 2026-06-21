@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ava — Video 2 — Lost Super</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:390px;height:844px;background:#061826;font-family:'Nunito',sans-serif;overflow:hidden;position:relative;}
+.bg{position:absolute;inset:0;background:radial-gradient(ellipse at 70% 20%,#0a2a1a 0%,#061826 65%);}
+.gp{position:absolute;width:3px;height:3px;border-radius:50%;animation:gf linear infinite;opacity:0;}
+@keyframes gf{0%{transform:translateY(860px);opacity:0;}8%{opacity:0.8;}90%{opacity:0.3;}100%{transform:translateY(-10px);opacity:0;}}
+#site-logo{position:fixed;top:14px;left:18px;font-family:'Bebas Neue',sans-serif;font-size:15px;color:rgba(245,185,66,0.5);letter-spacing:0.1em;z-index:999;}
+#prog-bar{position:fixed;bottom:280px;left:0;right:0;height:3px;background:rgba(245,185,66,0.15);z-index:20;}
+#prog-fill{height:100%;background:linear-gradient(90deg,#00e676,#f5b942);width:0%;transition:width 0.08s linear;}
+
+/* AVA ZONE */
+#ava-zone{position:absolute;bottom:0;left:0;right:0;height:280px;z-index:5;}
+.ava-glow{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:300px;height:120px;background:radial-gradient(ellipse,rgba(0,230,118,0.12) 0%,transparent 70%);border-radius:50%;}
+.ava-placeholder{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:220px;height:260px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
+.ava-hint{background:rgba(0,230,118,0.08);border:2px dashed rgba(0,230,118,0.3);border-radius:20px;padding:16px 24px;text-align:center;font-size:12px;color:rgba(0,230,118,0.5);line-height:1.6;margin-bottom:8px;}
+.ava-label{background:linear-gradient(135deg,#00e676,#16a34a);border-radius:20px;padding:5px 16px;font-size:11px;font-weight:800;color:#000;letter-spacing:0.05em;}
+
+/* SCENES */
+.scene{position:absolute;top:20px;left:18px;right:18px;opacity:0;transition:opacity 0.5s;}
+.scene.show{opacity:1;}
+
+/* S1 — Question hook */
+#s1 .q-wrap{text-align:center;padding-top:20px;}
+#s1 .q-emoji{font-size:56px;animation:pop 0.5s 0.3s both;}
+@keyframes pop{from{opacity:0;transform:scale(0.5);}to{opacity:1;transform:scale(1);}}
+#s1 .q-text{font-family:'Bebas Neue',sans-serif;font-size:42px;color:#fff;line-height:1.1;margin-top:14px;animation:si 0.5s 0.6s both;}
+#s1 .q-text .gold{color:#f5b942;}
+#s1 .q-sub{font-size:15px;color:#7a9ab5;margin-top:10px;line-height:1.55;animation:si 0.5s 0.9s both;}
+@keyframes si{from{opacity:0;transform:translateY(15px);}to{opacity:1;transform:translateY(0);}}
+
+/* S2 — Counter */
+#s2 .counter-wrap{text-align:center;padding-top:10px;}
+#s2 .c-label{font-size:12px;color:#7a9ab5;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;animation:si 0.4s 0.2s both;}
+#s2 .c-number{font-family:'Bebas Neue',sans-serif;font-size:90px;color:#f5b942;line-height:1;text-shadow:0 0 40px rgba(245,185,66,0.3);animation:pop 0.6s 0.4s both;}
+#s2 .c-sub{font-size:15px;color:#dde8f5;margin-top:8px;animation:si 0.4s 0.8s both;}
+#s2 .c-source{font-size:11px;color:#7a9ab5;margin-top:6px;animation:si 0.4s 1s both;}
+#s2 .c-bar{height:4px;background:rgba(245,185,66,0.15);border-radius:2px;margin-top:20px;overflow:hidden;animation:si 0.4s 1.2s both;}
+#s2 .c-bar-fill{height:100%;background:linear-gradient(90deg,#f5b942,#e8a020);width:0%;transition:width 1.5s ease-out;}
+
+/* S3 — Steps */
+#s3 .steps-title{font-family:'Bebas Neue',sans-serif;font-size:34px;color:#fff;margin-bottom:14px;animation:si 0.4s 0.2s both;}
+#s3 .steps-title .gold{color:#f5b942;}
+.step-item{display:flex;align-items:flex-start;gap:14px;background:rgba(11,42,61,0.9);border:1px solid #1a3a52;border-radius:14px;padding:14px 16px;margin-bottom:10px;transform:translateX(-60px);opacity:0;transition:all 0.45s;}
+.step-item.in{transform:translateX(0);opacity:1;}
+.step-item.hl{border-color:rgba(0,230,118,0.3);background:rgba(0,230,118,0.05);}
+.step-n{width:30px;height:30px;background:#f5b942;border-radius:50%;color:#000;font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-t{font-size:13px;color:#dde8f5;line-height:1.5;}
+.step-t b{color:#00e676;display:block;margin-bottom:2px;}
+
+/* S4 — CTA */
+#s4 .cta-h{font-family:'Bebas Neue',sans-serif;font-size:50px;color:#fff;line-height:1.05;animation:si 0.5s 0.2s both;}
+#s4 .cta-h .gold{color:#f5b942;}
+#s4 .cta-p{font-size:13px;color:#7a9ab5;margin:10px 0 16px;line-height:1.5;animation:si 0.4s 0.5s both;}
+#s4 .cta-btn{background:linear-gradient(135deg,#f5b942,#e8a020);border-radius:50px;padding:18px;font-family:'Bebas Neue',sans-serif;font-size:28px;color:#000;text-align:center;display:block;animation:pop 0.6s 0.7s both;box-shadow:0 8px 32px rgba(245,185,66,0.35);}
+#s4 .cta-url{font-size:13px;color:rgba(245,185,66,0.6);text-align:center;margin-top:10px;animation:si 0.4s 1s both;letter-spacing:0.08em;}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<div id="site-logo">MISSINGCASH.COM.AU</div>
+<div id="prog-bar"><div id="prog-fill"></div></div>
+
+<div id="s1" class="scene">
+  <div class="q-wrap">
+    <div class="q-emoji">🤔</div>
+    <div class="q-text">When Did You<br>Last Check Your<br><span class="gold">Super?</span></div>
+    <div class="q-sub">If you've changed jobs, moved house or just got busy — you could have lost super sitting forgotten right now.</div>
+  </div>
+</div>
+
+<div id="s2" class="scene">
+  <div class="counter-wrap">
+    <div class="c-label">Average Lost Super Per Australian</div>
+    <div class="c-number" id="cnum">$0</div>
+    <div class="c-sub">Sitting with the ATO — unclaimed</div>
+    <div class="c-source">Source: ATO Lost Super Data 2024</div>
+    <div class="c-bar"><div class="c-bar-fill" id="cbar"></div></div>
+  </div>
+</div>
+
+<div id="s3" class="scene">
+  <div class="steps-title">3 Steps to<br><span class="gold">Find Yours</span></div>
+  <div class="step-item" id="st1"><div class="step-n">1</div><div class="step-t"><b>Log in to myGov</b>Link your ATO service — 3 minutes</div></div>
+  <div class="step-item hl" id="st2"><div class="step-n">2</div><div class="step-t"><b>Check Super → Manage</b>All accounts linked to your TFN appear instantly</div></div>
+  <div class="step-item" id="st3"><div class="step-n">3</div><div class="step-t"><b>Transfer online — free</b>Consolidate to your active fund. No paperwork.</div></div>
+</div>
+
+<div id="s4" class="scene">
+  <div class="cta-h">Don't Leave<br><span class="gold">$13,000+</span><br>Behind</div>
+  <div class="cta-p">Full step-by-step guide — super, ASIC shares, ATO unclaimed cash, rental bonds & more. One-time $4.99.</div>
+  <div class="cta-btn">💰 Get the Full Guide — $4.99</div>
+  <div class="cta-url">missingcash.com.au</div>
+</div>
+
+<div id="ava-zone">
+  <div class="ava-glow"></div>
+  <div class="ava-placeholder">
+    <div class="ava-hint">📌 Place Ava here<br>Export from HeyGen/Pipio<br>as transparent PNG/MP4</div>
+    <div class="ava-label">AVA — MissingCash AI</div>
+  </div>
+</div>
+
+<script>
+const colors=['#f5b942','#00e676','#dde8f5'];
+for(let i=0;i<14;i++){
+  const p=document.createElement('div');p.className='gp';
+  p.style.cssText=`left:${Math.random()*390}px;background:${colors[Math.floor(Math.random()*3)]};animation-duration:${8+Math.random()*9}s;animation-delay:${Math.random()*8}s;`;
+  document.body.appendChild(p);
+}
+let pv=0,pt=0;const pf=document.getElementById('prog-fill');
+setInterval(()=>{if(pv<pt){pv+=0.4;pf.style.width=pv+'%';}},50);
+function show(id){document.getElementById(id).classList.add('show');}
+function hide(id){document.getElementById(id).classList.remove('show');}
+function animCount(el,target,dur){
+  let v=0,step=target/80;
+  const iv=setInterval(()=>{v+=step;if(v>=target){v=target;clearInterval(iv);}
+    el.textContent='$'+Math.floor(v).toLocaleString();},dur/80);
+}
+const scenes=[
+  {dur:5000,start(){pt=22;show('s1');}},
+  {dur:5500,start(){pt=46;hide('s1');setTimeout(()=>{show('s2');animCount(document.getElementById('cnum'),13800,1600);setTimeout(()=>document.getElementById('cbar').style.width='78%',600);},400);}},
+  {dur:5500,start(){pt=72;hide('s2');document.getElementById('cbar').style.width='0%';setTimeout(()=>{show('s3');setTimeout(()=>document.getElementById('st1').classList.add('in'),300);setTimeout(()=>document.getElementById('st2').classList.add('in'),700);setTimeout(()=>document.getElementById('st3').classList.add('in'),1100);},400);}},
+  {dur:6000,start(){pt=100;hide('s3');['st1','st2','st3'].forEach(id=>document.getElementById(id).classList.remove('in'));setTimeout(()=>show('s4'),400);}}
+];
+let cur=0;
+function run(i){
+  if(i>=scenes.length){setTimeout(()=>{pv=0;pt=0;pf.style.width='0%';['s1','s2','s3','s4'].forEach(hide);['st1','st2','st3'].forEach(id=>document.getElementById(id).classList.remove('in'));setTimeout(()=>run(0),600);},3000);return;}
+  scenes[i].start();setTimeout(()=>run(i+1),scenes[i].dur);
+}
+setTimeout(()=>run(0),800);
+</script>
+</body>
+</html>

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ava — Video 1 — Did You Know</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{width:390px;height:844px;background:#061826;font-family:'Nunito',sans-serif;overflow:hidden;position:relative;}
+
+/* ── BACKGROUND ── */
+.bg{position:absolute;inset:0;background:radial-gradient(ellipse at 25% 15%,#0f2a48 0%,#061826 65%);}
+.bg-circle{position:absolute;border-radius:50%;border:1px solid rgba(245,185,66,0.07);animation:spin-slow linear infinite;}
+.bg-circle:nth-child(1){width:700px;height:700px;top:-250px;left:-200px;animation-duration:30s;}
+.bg-circle:nth-child(2){width:500px;height:500px;bottom:-200px;right:-200px;animation-duration:45s;animation-direction:reverse;}
+@keyframes spin-slow{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+/* Gold particles */
+.gp{position:absolute;width:3px;height:3px;background:#f5b942;border-radius:50%;animation:gfloat linear infinite;opacity:0;}
+@keyframes gfloat{0%{transform:translateY(860px);opacity:0;}8%{opacity:0.8;}85%{opacity:0.4;}100%{transform:translateY(-10px);opacity:0;}}
+
+/* ── BOTTOM AVATAR ZONE ── */
+#ava-zone{position:absolute;bottom:0;left:0;right:0;height:280px;z-index:5;}
+/* Gold glow under avatar */
+.ava-glow{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:300px;height:120px;background:radial-gradient(ellipse,rgba(245,185,66,0.15) 0%,transparent 70%);border-radius:50%;}
+/* Avatar placeholder — replace with Ava PNG from HeyGen */
+.ava-placeholder{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:220px;height:260px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;}
+.ava-hint{background:rgba(245,185,66,0.1);border:2px dashed rgba(245,185,66,0.4);border-radius:20px;padding:16px 24px;text-align:center;font-size:12px;color:rgba(245,185,66,0.6);line-height:1.6;margin-bottom:8px;}
+.ava-label{background:linear-gradient(135deg,#f5b942,#e8a020);border-radius:20px;padding:5px 16px;font-size:11px;font-weight:800;color:#000;letter-spacing:0.05em;}
+
+/* ── CONTENT AREA ── */
+#content{position:absolute;top:0;left:0;right:0;bottom:280px;z-index:10;padding:20px 18px 10px;}
+
+/* ── SCENE ELEMENTS ── */
+.scene{position:absolute;top:20px;left:18px;right:18px;opacity:0;transition:opacity 0.5s;}
+.scene.show{opacity:1;}
+
+/* Scene 1 — Hook */
+#s1 .hook-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(245,185,66,0.12);border:1px solid rgba(245,185,66,0.35);border-radius:100px;padding:7px 18px;font-size:12px;font-weight:800;color:#f5b942;letter-spacing:0.06em;margin-bottom:16px;animation:badge-in 0.5s 0.3s both;}
+@keyframes badge-in{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+#s1 .hook-title{font-family:'Bebas Neue',sans-serif;font-size:58px;color:#fff;line-height:1.0;letter-spacing:0.02em;animation:title-in 0.6s 0.5s both;}
+#s1 .hook-title .gold{color:#f5b942;}
+@keyframes title-in{from{opacity:0;transform:translateX(-30px);}to{opacity:1;transform:translateX(0);}}
+#s1 .hook-sub{font-size:16px;color:#7a9ab5;margin-top:12px;line-height:1.55;animation:title-in 0.5s 0.9s both;}
+#s1 .hook-sub .w{color:#dde8f5;}
+
+/* Scene 2 — Stats */
+#s2 .stat-wrap{display:flex;flex-direction:column;gap:12px;}
+.stat-card{background:rgba(11,42,61,0.9);border:1px solid #1a3a52;border-radius:18px;padding:16px 20px;display:flex;align-items:center;gap:16px;transform:translateX(-50px);opacity:0;transition:all 0.5s;}
+.stat-card.in{transform:translateX(0);opacity:1;}
+.stat-card .sc-icon{font-size:32px;flex-shrink:0;}
+.stat-card .sc-num{font-family:'Bebas Neue',sans-serif;font-size:38px;color:#f5b942;line-height:1;}
+.stat-card .sc-lbl{font-size:12px;color:#7a9ab5;margin-top:3px;}
+.stat-card.hl{border-color:rgba(245,185,66,0.4);background:rgba(245,185,66,0.05);}
+
+/* Scene 3 — CTA */
+#s3 .cta-title{font-family:'Bebas Neue',sans-serif;font-size:50px;color:#fff;line-height:1.05;letter-spacing:0.02em;animation:title-in 0.5s 0.2s both;}
+#s3 .cta-title .gold{color:#f5b942;}
+#s3 .cta-free{display:inline-flex;align-items:center;gap:8px;background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.3);border-radius:100px;padding:7px 18px;font-size:13px;font-weight:800;color:#00e676;margin:14px 0;animation:badge-in 0.5s 0.5s both;}
+#s3 .cta-btn{background:linear-gradient(135deg,#f5b942,#e8a020);border-radius:50px;padding:18px 28px;font-family:'Bebas Neue',sans-serif;font-size:28px;color:#000;letter-spacing:0.05em;text-align:center;box-shadow:0 8px 32px rgba(245,185,66,0.35);animation:btn-pop 0.6s 0.8s both;display:block;}
+@keyframes btn-pop{from{opacity:0;transform:scale(0.85);}to{opacity:1;transform:scale(1);}}
+#s3 .cta-url{font-size:13px;color:rgba(245,185,66,0.6);text-align:center;margin-top:10px;letter-spacing:0.1em;animation:badge-in 0.4s 1.1s both;}
+
+/* ── PROGRESS ── */
+#prog-bar{position:fixed;bottom:280px;left:0;right:0;height:3px;background:rgba(245,185,66,0.15);z-index:20;}
+#prog-fill{height:100%;background:linear-gradient(90deg,#f5b942,#e8a020);width:0%;transition:width 0.08s linear;}
+
+/* ── LOGO ── */
+#site-logo{position:fixed;top:14px;left:18px;font-family:'Bebas Neue',sans-serif;font-size:15px;color:rgba(245,185,66,0.5);letter-spacing:0.1em;z-index:999;}
+</style>
+</head>
+<body>
+<div class="bg"><div class="bg-circle"></div><div class="bg-circle"></div></div>
+<div id="site-logo">MISSINGCASH.COM.AU</div>
+
+<!-- SCENES -->
+<div id="s1" class="scene">
+  <div class="hook-badge">🇦🇺 REAL AUSTRALIAN MONEY</div>
+  <div class="hook-title">$2.6<span class="gold">B+</span><br>SITS<br>UNCLAIMED</div>
+  <div class="hook-sub">Banks, the ATO & ASIC are holding <span class="w">your money</span> — waiting for you to claim it.</div>
+</div>
+
+<div id="s2" class="scene">
+  <div class="stat-wrap">
+    <div class="stat-card hl" id="sc1"><div class="sc-icon">💰</div><div><div class="sc-num">$2.6B+</div><div class="sc-lbl">Total unclaimed in Australia</div></div></div>
+    <div class="stat-card" id="sc2"><div class="sc-icon">👤</div><div><div class="sc-num">1 in 5</div><div class="sc-lbl">Aussies have lost super</div></div></div>
+    <div class="stat-card" id="sc3"><div class="sc-icon">💵</div><div><div class="sc-num">$13,000+</div><div class="sc-lbl">Average lost super per person</div></div></div>
+    <div class="stat-card" id="sc4"><div class="sc-icon">⚡</div><div><div class="sc-num">2 min</div><div class="sc-lbl">That's all it takes to check</div></div></div>
+  </div>
+</div>
+
+<div id="s3" class="scene">
+  <div class="cta-title">Is <span class="gold">YOUR</span><br>Money<br>Waiting?</div>
+  <div class="cta-free">✓ 100% FREE to search</div>
+  <div class="cta-btn">🔍 FIND MY MONEY NOW</div>
+  <div class="cta-url">missingcash.com.au</div>
+</div>
+
+<!-- PROGRESS -->
+<div id="prog-bar"><div id="prog-fill"></div></div>
+
+<!-- AVA AVATAR ZONE -->
+<div id="ava-zone">
+  <div class="ava-glow"></div>
+  <div class="ava-placeholder">
+    <div class="ava-hint">📌 Place Ava here<br>Export from HeyGen/Pipio<br>as transparent PNG/MP4</div>
+    <div class="ava-label">AVA — MissingCash AI</div>
+  </div>
+</div>
+
+<script>
+// Gold particles
+for(let i=0;i<16;i++){
+  const p=document.createElement('div');p.className='gp';
+  p.style.cssText=`left:${Math.random()*390}px;animation-duration:${8+Math.random()*8}s;animation-delay:${Math.random()*8}s;`;
+  document.body.appendChild(p);
+}
+
+let pv=0,pt=0;
+const pf=document.getElementById('prog-fill');
+setInterval(()=>{if(pv<pt){pv+=0.4;pf.style.width=pv+'%';}},50);
+
+function show(id){document.getElementById(id).classList.add('show');}
+function hide(id){document.getElementById(id).classList.remove('show');}
+
+const scenes=[
+  {dur:5000,start(){
+    pt=30;show('s1');
+  }},
+  {dur:6000,start(){
+    pt=65;hide('s1');
+    setTimeout(()=>{
+      show('s2');
+      setTimeout(()=>document.getElementById('sc1').classList.add('in'),200);
+      setTimeout(()=>document.getElementById('sc2').classList.add('in'),500);
+      setTimeout(()=>document.getElementById('sc3').classList.add('in'),800);
+      setTimeout(()=>document.getElementById('sc4').classList.add('in'),1100);
+    },400);
+  }},
+  {dur:6000,start(){
+    pt=100;hide('s2');
+    ['sc1','sc2','sc3','sc4'].forEach(id=>document.getElementById(id).classList.remove('in'));
+    setTimeout(()=>show('s3'),400);
+  }}
+];
+
+let cur=0;
+function run(i){
+  if(i>=scenes.length){
+    setTimeout(()=>{
+      pv=0;pt=0;pf.style.width='0%';
+      ['s1','s2','s3'].forEach(hide);
+      ['sc1','sc2','sc3','sc4'].forEach(id=>document.getElementById(id).classList.remove('in'));
+      setTimeout(()=>run(0),600);
+    },3000);return;
+  }
+  scenes[i].start();
+  setTimeout(()=>run(i+1),scenes[i].dur);
+}
+setTimeout(()=>run(0),800);
+</script>
+</body>
+</html>

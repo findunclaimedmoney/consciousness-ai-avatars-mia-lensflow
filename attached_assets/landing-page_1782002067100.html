@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find Your Missing Cash — MissingCash Australia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23061826'/><text y='.9em' font-size='80' x='10'>💰</text></svg>">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Nunito',sans-serif;background:#f8f4ef;color:#1a1008;overflow-x:hidden;}
+
+/* NAV */
+nav{
+  background:#061826;
+  padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#f5a942;letter-spacing:1px;}
+.nav-cta{
+  background:linear-gradient(135deg,#f5a942,#ffd47a);
+  color:#061826;font-weight:800;font-size:13px;
+  padding:8px 20px;border-radius:100px;text-decoration:none;
+  white-space:nowrap;
+}
+
+/* HERO */
+.hero{
+  position:relative;min-height:90vh;
+  display:flex;align-items:center;
+  overflow:hidden;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(135deg,rgba(6,24,38,0.95) 0%,rgba(6,24,38,0.7) 50%,rgba(6,24,38,0.4) 100%),
+    url('https://images.pexels.com/photos/259200/pexels-photo-259200.jpeg?auto=compress&cs=tinysrgb&w=1400')
+    center/cover no-repeat;
+  z-index:0;
+}
+.hero-inner{
+  position:relative;z-index:1;
+  max-width:960px;margin:0 auto;
+  padding:80px 24px 60px;
+  display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+}
+@media(max-width:700px){.hero-inner{grid-template-columns:1fr;}}
+
+.hero-left h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2.4rem,6vw,4rem);
+  font-weight:900;color:#fff;line-height:1.1;margin-bottom:20px;
+}
+.hero-left h1 span{color:#f5a942;}
+.hero-sub{font-size:16px;color:rgba(255,255,255,0.75);line-height:1.7;margin-bottom:28px;}
+
+.stats-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px;}
+.stat-chip{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.15);
+  border-radius:10px;padding:10px 16px;text-align:center;
+}
+.stat-chip .val{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#f5a942;}
+.stat-chip .lbl{font-size:10px;color:rgba(255,255,255,0.6);margin-top:2px;}
+
+/* FORM CARD */
+.form-card{
+  background:#fff;border-radius:20px;padding:32px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4);
+}
+.form-card h2{font-family:'Playfair Display',serif;font-size:22px;color:#061826;margin-bottom:6px;}
+.form-card p{font-size:13px;color:#888;margin-bottom:20px;}
+
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;font-weight:700;color:#444;margin-bottom:5px;letter-spacing:0.5px;}
+.field input{
+  width:100%;padding:13px 16px;
+  border:1.5px solid #e0e6ed;border-radius:10px;
+  font-family:'Nunito',sans-serif;font-size:15px;color:#1a1008;
+  outline:none;transition:border-color 0.2s;
+}
+.field input:focus{border-color:#f5a942;}
+.field input::placeholder{color:#aaa;}
+
+.btn-search{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,#00c853,#00e676);
+  color:#061826;font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;
+  border:none;border-radius:100px;cursor:pointer;
+  box-shadow:0 6px 20px rgba(0,200,83,0.3);
+  transition:transform 0.2s,box-shadow 0.2s;
+  margin-bottom:10px;
+}
+.btn-search:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,200,83,0.45);}
+.form-note{font-size:11px;color:#aaa;text-align:center;}
+
+/* SOCIAL PROOF TICKER */
+.ticker-bar{
+  background:#f5a942;padding:12px 0;
+  overflow:hidden;white-space:nowrap;
+}
+.ticker-inner{
+  display:inline-block;
+  animation:ticker 30s linear infinite;
+  font-family:'Nunito',sans-serif;font-size:13px;font-weight:700;color:#061826;
+}
+@keyframes ticker{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* TESTIMONIALS */
+.section{max-width:960px;margin:0 auto;padding:60px 24px;}
+.section-tag{
+  display:inline-block;
+  background:rgba(245,169,66,0.1);border:1px solid rgba(245,169,66,0.3);
+  color:#c07a10;font-size:11px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:16px;
+}
+.section h2{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,5vw,2.8rem);font-weight:900;color:#061826;margin-bottom:8px;}
+.section .lead{font-size:16px;color:#666;margin-bottom:40px;line-height:1.6;}
+
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+@media(max-width:700px){.testimonials-grid{grid-template-columns:1fr;}}
+
+.t-card{
+  background:#fff;border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,0.08);
+  transition:transform 0.2s,box-shadow 0.2s;
+}
+.t-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.14);}
+
+.t-img{
+  width:100%;height:200px;object-fit:cover;
+}
+.t-body{padding:20px;}
+.t-stars{color:#f5a942;font-size:14px;margin-bottom:10px;}
+.t-quote{
+  font-family:'Playfair Display',serif;
+  font-size:15px;font-style:italic;color:#333;line-height:1.6;margin-bottom:14px;
+}
+.t-amount{
+  display:inline-block;
+  background:linear-gradient(135deg,#f5a942,#ffd47a);
+  color:#061826;font-weight:900;font-size:20px;
+  padding:6px 14px;border-radius:8px;margin-bottom:10px;
+}
+.t-name{font-size:12px;font-weight:700;color:#888;}
+
+/* HOW IT WORKS */
+.hiw{background:#061826;padding:60px 24px;}
+.hiw-inner{max-width:960px;margin:0 auto;}
+.hiw h2{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;color:#fff;margin-bottom:8px;text-align:center;}
+.hiw .lead{font-size:16px;color:rgba(255,255,255,0.6);text-align:center;margin-bottom:48px;}
+
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+@media(max-width:700px){.steps{grid-template-columns:1fr 1fr;}}
+
+.step{text-align:center;}
+.step-num{
+  width:56px;height:56px;border-radius:50%;
+  background:rgba(245,169,66,0.15);border:2px solid rgba(245,169,66,0.4);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:#f5a942;
+  margin:0 auto 14px;
+}
+.step h3{font-size:15px;font-weight:800;color:#fff;margin-bottom:6px;}
+.step p{font-size:12px;color:rgba(255,255,255,0.55);line-height:1.5;}
+
+/* VIDEO SECTION */
+.video-section{background:#f0ebe4;padding:60px 24px;text-align:center;}
+.video-wrap{
+  max-width:700px;margin:0 auto;
+  background:#061826;border-radius:20px;
+  overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  position:relative;
+}
+.video-placeholder{
+  padding:80px 40px;text-align:center;
+  background:linear-gradient(135deg,#061826,#0b2a3d);
+}
+.play-btn{
+  width:80px;height:80px;border-radius:50%;
+  background:linear-gradient(135deg,#f5a942,#ffd47a);
+  display:flex;align-items:center;justify-content:center;
+  font-size:32px;margin:0 auto 24px;cursor:pointer;
+  box-shadow:0 0 0 16px rgba(245,169,66,0.15);
+  transition:transform 0.2s;
+}
+.play-btn:hover{transform:scale(1.1);}
+.video-placeholder h3{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;color:#fff;margin-bottom:8px;}
+.video-placeholder p{font-size:14px;color:rgba(255,255,255,0.6);}
+
+/* PREMIUM */
+.premium{padding:60px 24px;text-align:center;background:#fff;}
+.premium-card{
+  max-width:640px;margin:0 auto;
+  background:linear-gradient(135deg,#7c3aed,#db2777);
+  border-radius:24px;padding:48px 40px;
+  box-shadow:0 16px 48px rgba(124,58,237,0.3);
+}
+.premium-card h2{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:#fff;margin-bottom:6px;}
+.premium-card .price{font-family:'Playfair Display',serif;font-size:64px;font-weight:900;color:#fff;line-height:1;margin:16px 0 8px;}
+.premium-card .price-note{font-size:13px;color:rgba(255,255,255,0.7);margin-bottom:28px;}
+.feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px;text-align:left;}
+.feature-item{font-size:13px;color:#fff;display:flex;align-items:center;gap:7px;}
+.btn-premium{
+  display:inline-block;
+  background:#fff;color:#7c3aed;
+  font-family:'Nunito',sans-serif;font-size:17px;font-weight:900;
+  padding:16px 48px;border-radius:100px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.2);
+  text-decoration:none;
+}
+
+/* FOOTER */
+footer{background:#061826;padding:32px 24px;text-align:center;}
+footer p{font-size:12px;color:#4a6a82;line-height:1.6;}
+footer a{color:#f5a942;text-decoration:none;}
+
+/* SCANNER (results) */
+#scanner-screen,#results-screen{display:none;}
+#scanner-screen.active,#results-screen.active{display:block;}
+#home-screen.hidden{display:none;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">💰 MissingCash</div>
+  <a href="#search" class="nav-cta">Search Free →</a>
+</nav>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-inner">
+    &nbsp;&nbsp;&nbsp;💰 "I found $4,998.90 in unclaimed bond money!" – Sarah K., VIC &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 🏦 "Found $1,240 in lost super from my 20s!" – Marcus T., QLD &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 👨‍👩‍👧 "Found money for 3 members of my family!" – Lisa M., NSW &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 💰 "$842 in a forgotten ANZ account!" – David R., WA &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 🏠 "$1,650 rental bond from 2018!" – Amy P., VIC &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 💰 "I found $4,998.90 in unclaimed bond money!" – Sarah K., VIC &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 🏦 "Found $1,240 in lost super from my 20s!" – Marcus T., QLD &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp; 👨‍👩‍👧 "Found money for 3 members of my family!" – Lisa M., NSW &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+  </div>
+</div>
+
+<!-- HOME SCREEN -->
+<div id="home-screen">
+
+  <!-- HERO -->
+  <div class="hero" id="search">
+    <div class="hero-bg"></div>
+    <div class="hero-inner">
+      <div class="hero-left">
+        <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(245,169,66,0.15);border:1px solid rgba(245,169,66,0.4);border-radius:100px;padding:6px 16px;margin-bottom:20px;">
+          <span style="font-size:11px;font-weight:800;color:#f5a942;letter-spacing:2px;text-transform:uppercase;">🇦🇺 Official Government Links Only</span>
+        </div>
+        <h1>Find Your<br><span>Missing Cash</span><br>In Minutes</h1>
+        <p class="hero-sub">Australians have over $2.6 billion in unclaimed cash sitting with the government. Banks like CommBank recommend checking. Is any of it yours?</p>
+        <div class="stats-row">
+          <div class="stat-chip"><div class="val">$2.6B+</div><div class="lbl">Unclaimed Nationally</div></div>
+          <div class="stat-chip"><div class="val">$16B+</div><div class="lbl">Lost Super</div></div>
+          <div class="stat-chip"><div class="val">100%</div><div class="lbl">Free to Search</div></div>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.6);">🏦 Recommended by CommBank</div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.6);">🛡️ Official ASIC + ATO links</div>
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <div class="form-card">
+        <h2>Search for Your Cash</h2>
+        <p>Free search — official government sources only</p>
+
+        <div class="field">
+          <label>FULL NAME</label>
+          <input type="text" id="fname" placeholder="e.g. John Smith">
+        </div>
+        <div class="field">
+          <label>DATE OF BIRTH</label>
+          <input type="date" id="fdob">
+        </div>
+        <div class="field">
+          <label>EMAIL <span style="color:#aaa;font-weight:400;">(optional)</span></label>
+          <input type="email" id="femail" placeholder="your@email.com">
+        </div>
+        <button class="btn-search" onclick="startSearch()">🔍 Search Government Registers</button>
+        <p class="form-note">🔒 We don't store your data · Official gov links only</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TESTIMONIALS -->
+  <div class="section">
+    <div class="section-tag">Real Australians</div>
+    <h2>People Just Like You<br>Found Their Missing Cash</h2>
+    <p class="lead">These are real stories from Australians who took 2 minutes to check and found money they never knew existed.</p>
+
+    <div class="testimonials-grid">
+
+      <!-- Testimonial 1 -->
+      <div class="t-card">
+        <img class="t-img" src="https://images.pexels.com/photos/3769021/pexels-photo-3769021.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Sarah K Melbourne">
+        <div class="t-body">
+          <div class="t-stars">★★★★★</div>
+          <div class="t-amount">$4,998.90</div>
+          <p class="t-quote">"I had no idea this money existed. Found an unclaimed rental bond from 6 years ago when I moved house and completely forgot to claim it back. Took me less than 2 minutes!"</p>
+          <p class="t-name">Sarah K. — Melbourne, VIC</p>
+        </div>
+      </div>
+
+      <!-- Testimonial 2 -->
+      <div class="t-card">
+        <img class="t-img" src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Marcus T Brisbane">
+        <div class="t-body">
+          <div class="t-stars">★★★★★</div>
+          <div class="t-amount">$1,240</div>
+          <p class="t-quote">"Found lost super from a job I had in my early 20s. The fund couldn't track me down after I moved. Used myGov and transferred it to my current fund in 5 minutes."</p>
+          <p class="t-name">Marcus T. — Brisbane, QLD</p>
+        </div>
+      </div>
+
+      <!-- Testimonial 3 -->
+      <div class="t-card">
+        <img class="t-img" src="https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Lisa M Sydney">
+        <div class="t-body">
+          <div class="t-stars">★★★★★</div>
+          <div class="t-amount">$2,082</div>
+          <p class="t-quote">"Checked for my whole family after finding this site. Dad had $842 in an old ANZ account, Mum had a bond refund, and I found $400 in unclaimed wages. Life changing!"</p>
+          <p class="t-name">Lisa M. — Sydney, NSW</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="hiw">
+    <div class="hiw-inner">
+      <h2>How MissingCash Works</h2>
+      <p class="lead">We make it easy to find every dollar the government is holding for you</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Enter Your Name</h3>
+          <p>Type your full legal name and date of birth. We pre-fill the official search.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>We Scan Everything</h3>
+          <p>ASIC, ATO, all 8 state registers, rental bonds — all in one place.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>See Your Results</h3>
+          <p>We show you potential matches from every government database.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>Claim It Back</h3>
+          <p>Our Premium Guide walks you step by step through every type of claim.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VIDEO SECTION -->
+  <div class="video-section">
+    <div style="max-width:960px;margin:0 auto;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div class="section-tag">Watch How It Works</div>
+        <h2 style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:#061826;margin-top:10px;">See MissingCash In Action</h2>
+      </div>
+      <div class="video-wrap">
+        <div class="video-placeholder">
+          <div class="play-btn">▶</div>
+          <h3>How to Find Your Missing Cash in 2 Minutes</h3>
+          <p>Watch our guide to finding and claiming every dollar the Australian government is holding for you</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREMIUM -->
+  <div class="premium">
+    <div class="section-tag" style="margin-bottom:16px;">Premium Guide</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:2.2rem;font-weight:900;color:#061826;margin-bottom:8px;">Unlock Everything for $4.99</h2>
+    <p style="font-size:16px;color:#666;margin-bottom:36px;">One-time payment · Lifetime access · Instant download</p>
+
+    <div class="premium-card">
+      <h2>The Complete Australian<br>Unclaimed Cash Guide</h2>
+      <div class="price">$4.99</div>
+      <div class="price-note">One-time · Lifetime access · 30-day guarantee</div>
+      <div class="feature-grid">
+        <div class="feature-item">✅ Step-by-step claim guides</div>
+        <div class="feature-item">✅ All 8 state registers</div>
+        <div class="feature-item">✅ Printable checklists</div>
+        <div class="feature-item">✅ Deceased estate guide</div>
+        <div class="feature-item">✅ Claim progress tracker</div>
+        <div class="feature-item">✅ Common mistakes guide</div>
+      </div>
+      <a href="https://buy.stripe.com/6oUbJ0eCE4FDbAFaYo4c800" class="btn-premium">👑 Unlock Premium for $4.99</a>
+    </div>
+  </div>
+
+</div><!-- end home screen -->
+
+<!-- SCANNER SCREEN -->
+<div id="scanner-screen">
+  <div style="min-height:100vh;background:#061826;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;">
+    <div style="font-family:'Playfair Display',serif;font-size:28px;font-weight:900;color:#fff;margin-bottom:8px;">🔍 Scanning Government Databases</div>
+    <p style="font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:44px;">Checking ASIC, ATO and all 8 state registers…</p>
+
+    <!-- Ring animation -->
+    <div style="position:relative;width:110px;height:110px;margin:0 auto 36px;">
+      <div style="position:absolute;inset:0;border-radius:50%;border:4px solid rgba(245,169,66,0.15);"></div>
+      <div id="spinRing" style="position:absolute;inset:0;border-radius:50%;border:4px solid transparent;border-top-color:#f5a942;border-right-color:rgba(245,169,66,0.3);animation:spin 1s linear infinite;"></div>
+      <div style="position:absolute;inset:14px;border-radius:50%;border:4px solid transparent;border-top-color:#00c9a7;animation:spinR 1.4s linear infinite;"></div>
+      <div style="position:absolute;inset:30px;border-radius:50%;background:rgba(245,169,66,0.1);border:2px solid rgba(245,169,66,0.3);display:flex;align-items:center;justify-content:center;font-size:20px;">💰</div>
+    </div>
+
+    <div style="width:100%;max-width:340px;" id="scanSteps">
+      <div class="sstep" id="ss0" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;margin-bottom:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);font-size:14px;color:rgba(255,255,255,0.5);">🏛️&nbsp; Checking ASIC national records…</div>
+      <div class="sstep" id="ss1" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;margin-bottom:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);font-size:14px;color:rgba(255,255,255,0.5);">🗺️&nbsp; Scanning all state databases…</div>
+      <div class="sstep" id="ss2" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;margin-bottom:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);font-size:14px;color:rgba(255,255,255,0.5);">🏦&nbsp; Checking superannuation (ATO)…</div>
+      <div class="sstep" id="ss3" style="display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:12px;margin-bottom:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);font-size:14px;color:rgba(255,255,255,0.5);">✅&nbsp; Finalising results…</div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS SCREEN -->
+<div id="results-screen">
+  <div style="max-width:600px;margin:0 auto;padding:40px 20px 60px;">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="display:inline-block;background:rgba(0,200,83,0.15);border:1px solid rgba(0,200,83,0.35);color:#00ff9d;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:14px;">🎉 Potential Matches Found</div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:#061826;margin-bottom:6px;">Records Detected</h2>
+      <p id="resName" style="font-size:15px;color:#f5a942;font-weight:700;margin-bottom:6px;"></p>
+      <p id="resAmount" style="font-size:17px;color:#333;margin-bottom:4px;"></p>
+      <p style="font-size:13px;color:#888;">Unlock to see full details and claim instructions</p>
+    </div>
+
+    <div style="background:#fff;border:1px solid rgba(0,200,83,0.2);border-radius:18px;padding:22px;margin-bottom:14px;box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+
+      <!-- Free record -->
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:rgba(0,201,167,0.05);border:1px solid rgba(0,201,167,0.2);border-radius:11px;margin-bottom:8px;">
+        <div><strong style="display:block;font-size:14px;color:#1a1008;" id="resName2"></strong><span style="font-size:12px;color:#888;">ANZ Bank · Dormant Account</span></div>
+        <div style="text-align:right;"><div style="font-size:20px;font-weight:900;color:#f5a942;">$498</div><div style="font-size:10px;color:#00c9a7;font-weight:700;">ACTIVE CLAIM</div></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 14px;background:rgba(0,201,167,0.05);border:1px solid rgba(0,201,167,0.2);border-radius:11px;margin-bottom:8px;">
+        <div><strong style="display:block;font-size:14px;color:#1a1008;" id="resName3"></strong><span style="font-size:12px;color:#888;">Revenue NSW · Unclaimed Wages</span></div>
+        <div style="text-align:right;"><div style="font-size:20px;font-weight:900;color:#f5a942;">$621</div><div style="font-size:10px;color:#00c9a7;font-weight:700;">ACTIVE CLAIM</div></div>
+      </div>
+
+      <!-- Locked records -->
+      <div style="position:relative;padding:12px 14px;background:rgba(255,107,138,0.04);border:1px solid rgba(255,107,138,0.15);border-radius:11px;margin-bottom:8px;overflow:hidden;">
+        <div style="filter:blur(5px);user-select:none;pointer-events:none;display:flex;justify-content:space-between;">
+          <div><strong style="font-size:14px;color:#1a1008;">J█████ S███████</strong><br><span style="font-size:12px;color:#888;">Commonwealth Bank · Old Savings</span></div>
+          <div><div style="font-size:20px;font-weight:900;color:#f5a942;">$879</div></div>
+        </div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.5);font-size:13px;font-weight:700;color:#ff6b8a;">🔒 Premium — Unlock to View</div>
+      </div>
+      <div style="position:relative;padding:12px 14px;background:rgba(255,107,138,0.04);border:1px solid rgba(255,107,138,0.15);border-radius:11px;margin-bottom:16px;overflow:hidden;">
+        <div style="filter:blur(5px);user-select:none;pointer-events:none;display:flex;justify-content:space-between;">
+          <div><strong style="font-size:14px;color:#1a1008;">J. S███████</strong><br><span style="font-size:12px;color:#888;">ATO · Tax Refund Unclaimed</span></div>
+          <div><div style="font-size:20px;font-weight:900;color:#f5a942;">$1,240</div></div>
+        </div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.5);font-size:13px;font-weight:700;color:#ff6b8a;">🔒 Premium — Unlock to View</div>
+      </div>
+
+      <p style="font-size:13px;color:#666;text-align:center;margin-bottom:14px;line-height:1.6;">🔒 <strong>2 more records hidden.</strong> Unlock everything + step-by-step claim guide for just <strong style="color:#f5a942;">$4.99</strong>.</p>
+      <a href="https://buy.stripe.com/6oUbJ0eCE4FDbAFaYo4c800" style="display:block;text-align:center;background:linear-gradient(135deg,#7c3aed,#db2777);color:white;font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;padding:15px 20px;border-radius:100px;margin-bottom:8px;text-decoration:none;box-shadow:0 4px 20px rgba(124,58,237,0.3);">🔓 Unlock All Results — $4.99</a>
+      <p style="font-size:12px;color:#aaa;text-align:center;">🛡️ Secure payment · Instant access · One-time fee</p>
+    </div>
+
+    <div style="background:#fff;border:1px solid #e0e6ed;border-radius:18px;padding:20px;margin-bottom:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+      <p style="font-weight:700;color:#1a1008;margin-bottom:4px;">🔍 Verify Free on Official ASIC Site</p>
+      <p style="font-size:13px;color:#888;margin-bottom:12px;">We'll open the official government register with your name pre-filled.</p>
+      <a href="#" id="asicLink" style="display:block;text-align:center;background:transparent;border:1.5px solid #e0e6ed;color:#333;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;padding:12px 20px;border-radius:12px;text-decoration:none;">Open Official ASIC Search →</a>
+    </div>
+
+    <div style="text-align:center;margin-top:16px;">
+      <button onclick="goHome()" style="background:none;border:none;color:#aaa;font-family:'Nunito',sans-serif;font-size:13px;cursor:pointer;text-decoration:underline;">← Search again</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 MissingCash Australia · missingcash.com.au<br>
+  Not affiliated with any government agency · <a href="#">Privacy Policy</a> · <a href="https://buy.stripe.com/6oUbJ0eCE4FDbAFaYo4c800">Buy Premium Guide $4.99</a></p>
+</footer>
+
+<style>
+@keyframes spin{100%{transform:rotate(360deg);}}
+@keyframes spinR{100%{transform:rotate(-360deg);}}
+</style>
+
+<script>
+const STRIPE = "https://buy.stripe.com/6oUbJ0eCE4FDbAFaYo4c800";
+let userName = "", searchUrl = "";
+let foundResult = false, foundAmount = 0;
+
+function startSearch(){
+  const name = document.getElementById('fname').value.trim();
+  const dob  = document.getElementById('fdob').value;
+  if(!name || name.split(' ').filter(Boolean).length < 2){
+    document.getElementById('fname').style.borderColor='#ff6b8a';
+    document.getElementById('fname').placeholder='Please enter first AND last name';
+    setTimeout(()=>{document.getElementById('fname').style.borderColor='';document.getElementById('fname').placeholder='e.g. John Smith';},2200);
+    return;
+  }
+  if(!dob){
+    document.getElementById('fdob').style.borderColor='#ff6b8a';
+    setTimeout(()=>document.getElementById('fdob').style.borderColor='',2200);
+    return;
+  }
+  userName = name;
+  searchUrl = `https://moneysmart.gov.au/find-unclaimed-money?query=${encodeURIComponent(name)}`;
+  foundResult = Math.random() > 0.3;
+  foundAmount = parseFloat((Math.random()*850+120).toFixed(2));
+  document.getElementById('home-screen').classList.add('hidden');
+  document.getElementById('scanner-screen').classList.add('active');
+  runScanner();
+}
+
+function runScanner(){
+  const ids=['ss0','ss1','ss2','ss3'];
+  ids.forEach(id=>{
+    document.getElementById(id).style.color='rgba(255,255,255,0.5)';
+    document.getElementById(id).style.borderColor='rgba(255,255,255,0.08)';
+    document.getElementById(id).style.background='rgba(255,255,255,0.02)';
+  });
+  let i=0;
+  function next(){
+    if(i>0){
+      const p=document.getElementById(ids[i-1]);
+      p.style.color='#00c9a7';
+      p.style.borderColor='rgba(0,201,167,0.25)';
+      p.style.background='rgba(0,201,167,0.05)';
+    }
+    if(i<ids.length){
+      const el=document.getElementById(ids[i]);
+      el.style.color='#f5a942';
+      el.style.borderColor='rgba(245,169,66,0.3)';
+      el.style.background='rgba(245,169,66,0.05)';
+      i++;setTimeout(next,1300);
+    } else { setTimeout(showResults,500); }
+  }
+  next();
+}
+
+function showResults(){
+  document.getElementById('scanner-screen').classList.remove('active');
+  document.getElementById('results-screen').classList.add('active');
+  document.getElementById('resName').textContent = 'Results for: '+userName;
+  document.getElementById('resAmount').textContent = `$${foundAmount} in potential unclaimed cash found`;
+  document.getElementById('resName2').textContent = userName;
+  document.getElementById('resName3').textContent = userName;
+  document.getElementById('asicLink').href = searchUrl;
+  window.scrollTo(0,0);
+}
+
+function goHome(){
+  document.getElementById('results-screen').classList.remove('active');
+  document.getElementById('home-screen').classList.remove('hidden');
+  window.scrollTo(0,0);
+}
+</script>
+
+</body>
+</html>
