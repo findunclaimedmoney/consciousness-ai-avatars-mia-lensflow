@@ -268,26 +268,20 @@ export default function Home() {
 
             {/* Video frame */}
             <div className="relative rounded-2xl overflow-hidden border border-primary/30 shadow-2xl aspect-video bg-black">
-              <iframe
-                src="/missingcash-clip/"
-                className="w-full h-full"
-                allow="autoplay; fullscreen"
+              <video
+                src="/missingcash-clip.mp4"
+                poster="/mia-poster.jpg"
+                controls
+                playsInline
+                preload="metadata"
+                className="w-full h-full object-cover"
                 title="MissingCash — Meet Mia"
-              />
-
-              {/* Transparent click overlay → missingcash.com.au */}
-              <a
-                href="https://www.missingcash.com.au"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="absolute inset-0 z-10"
-                aria-label="Visit MissingCash"
               />
             </div>
 
             {/* Caption */}
             <p className="text-center text-xs text-muted-foreground mt-4 tracking-widest uppercase">
-              Click to visit <span className="text-primary">missingcash.com.au</span>
+              Watch Mia explain how <span className="text-primary">MissingCash</span> works
             </p>
           </div>
         </div>
