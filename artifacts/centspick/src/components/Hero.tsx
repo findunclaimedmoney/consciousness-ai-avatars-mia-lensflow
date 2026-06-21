@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Clock, Trophy, ShieldCheck } from "lucide-react";
 import { AuctionCard } from "./LiveAuctions";
 
+function scrollToSection(id: string) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+}
+
 export function Hero() {
   return (
     <section className="relative min-h-[90vh] flex items-center pt-10 pb-20 overflow-hidden">
@@ -35,10 +39,10 @@ export function Hero() {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 mb-12">
-              <Button size="lg" className="bg-primary hover:bg-primary-hover active:bg-primary-active text-white rounded-full px-8 h-14 text-lg font-bold shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all hover:shadow-[0_0_30px_rgba(236,72,153,0.5)] group">
+              <Button onClick={() => scrollToSection("live-auctions")} size="lg" className="bg-primary hover:bg-primary-hover active:bg-primary-active text-white rounded-full px-8 h-14 text-lg font-bold shadow-[0_0_20px_rgba(236,72,153,0.3)] transition-all hover:shadow-[0_0_30px_rgba(236,72,153,0.5)] group">
                 View Live Auctions <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button size="lg" variant="outline" className="rounded-full px-8 h-14 text-lg font-bold border-border hover:bg-card">
+              <Button onClick={() => scrollToSection("how-it-works")} size="lg" variant="outline" className="rounded-full px-8 h-14 text-lg font-bold border-border hover:bg-card">
                 How It Works
               </Button>
             </div>
@@ -71,7 +75,7 @@ export function Hero() {
                 id="hero-1"
                 title="Sony WH-1000XM5 Wireless Headphones"
                 retailPrice={549}
-                image="/images/headphones.png"
+                image={`${import.meta.env.BASE_URL}images/headphones.png`}
                 initialTime={15}
                 initialPrice={3.42}
                 initialBidder="Sarah_M"

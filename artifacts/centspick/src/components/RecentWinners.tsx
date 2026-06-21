@@ -9,7 +9,7 @@ const winners = [
     product: "Pro Barista Espresso Machine",
     retail: 899,
     paid: 12.45,
-    image: "/images/espresso-machine.png",
+    image: `${import.meta.env.BASE_URL}images/espresso-machine.png`,
     savings: "98%"
   },
   {
@@ -18,7 +18,7 @@ const winners = [
     product: "Sony WH-1000XM5 Headphones",
     retail: 549,
     paid: 4.12,
-    image: "/images/headphones.png",
+    image: `${import.meta.env.BASE_URL}images/headphones.png`,
     savings: "99%"
   },
   {
@@ -27,7 +27,7 @@ const winners = [
     product: "Ultra-Thin Gaming Laptop",
     retail: 3199,
     paid: 104.56,
-    image: "/images/laptop.png",
+    image: `${import.meta.env.BASE_URL}images/laptop.png`,
     savings: "96%"
   }
 ];

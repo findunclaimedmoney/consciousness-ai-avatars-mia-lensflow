@@ -1,3 +1,1 @@
-# Memory Index
-
-- [Mia voice & avatar](mia-voice-avatar.md) — Mia's ElevenLabs voice is the one named "Mia" (id x3PfG9wL6FOEApZ1VJ9H); openai pkg must stay installed; new secrets only reach running workflows.
+- [Base-path asset refs](base-path-assets.md) — artifacts served under a non-root path (e.g. /centspick/) must prefix public assets with import.meta.env.BASE_URL, not root-relative /images or /Logo.
