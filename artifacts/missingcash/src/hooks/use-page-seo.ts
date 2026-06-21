@@ -1,54 +1,44 @@
 import { useEffect } from "react";
 
-interface PageSEOOptions {
-  title?: string;
-  description?: string;
+interface PageSEO {
+  title: string;
+  description: string;
   keywords?: string;
   canonical?: string;
-  ogImage?: string;
 }
 
-export function usePageSEO({ title, description, keywords, canonical, ogImage }: PageSEOOptions) {
+export function usePageSEO({ title, description, keywords, canonical }: PageSEO) {
   useEffect(() => {
-    if (title) {
-      document.title = title;
-    }
+    document.title = title;
 
-    const setMeta = (selector: string, attr: string, value: string) => {
-      let el = document.querySelector<HTMLMetaElement>(selector);
+    const setMeta = (name: string, content: string, prop = false) => {
+      const selector = prop
+        ? `meta[property="${name}"]`
+        : `meta[name="${name}"]`;
+      let el = document.querySelector(selector) as HTMLMetaElement | null;
       if (!el) {
         el = document.createElement("meta");
+        prop ? el.setAttribute("property", name) : el.setAttribute("name", name);
         document.head.appendChild(el);
       }
-      (el as any)[attr] = value;
+      el.setAttribute("content", content);
     };
 
-    if (description) {
-      setMeta('meta[name="description"]', "content", description);
-      setMeta('meta[property="og:description"]', "content", description);
-    }
-
-    if (keywords) {
-      setMeta('meta[name="keywords"]', "content", keywords);
-    }
+    setMeta("description", description);
+    if (keywords) setMeta("keywords", keywords);
+    setMeta("og:title", title, true);
+    setMeta("og:description", description, true);
+    setMeta("twitter:title", title);
+    setMeta("twitter:description", description);
 
     if (canonical) {
-      let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
+      let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
       if (!link) {
         link = document.createElement("link");
-        link.rel = "canonical";
+        link.setAttribute("rel", "canonical");
         document.head.appendChild(link);
       }
-      link.href = canonical;
+      link.setAttribute("href", canonical);
     }
-
-    if (ogImage) {
-      setMeta('meta[property="og:image"]', "content", ogImage);
-    }
-
-    if (title) {
-      setMeta('meta[property="og:title"]', "content", title);
-      setMeta('meta[name="twitter:title"]', "content", title);
-    }
-  }, [title, description, keywords, canonical, ogImage]);
+  }, [title, description, keywords, canonical]);
 }
