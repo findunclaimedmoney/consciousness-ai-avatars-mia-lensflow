@@ -1,2 +1,1 @@
-- [Production DB provisioning](prod-db-provisioning.md) — dev DB works but prod throws `EAI_AGAIN helium`; prod DB was never wired, fix via createDatabase + Publish.
-- [api-server has no hot reload](api-server-no-hot-reload.md) — Express api-server only rebuilds on workflow restart; testing against a stale bundle looks like "the new code didn't run".
+- [Stratton Finance integration](stratton-integration.md) — finance-page partner integration: Option 1 = form emailed to integrations@stratton.com.au; required compliance disclaimer; lead from-address must be @missingcash.com.au (not lensflow), gated on Resend domain verification.

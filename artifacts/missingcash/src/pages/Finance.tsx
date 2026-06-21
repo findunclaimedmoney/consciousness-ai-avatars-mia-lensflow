@@ -534,7 +534,7 @@ export default function Finance() {
                 className="mt-0.5 accent-[#F5B942] w-4 h-4 shrink-0"
               />
               <span className="text-xs text-white/40 leading-relaxed group-hover:text-white/60 transition-colors">
-                I consent to Stratton Finance and MissingCash contacting me about finance options. I understand my details will be passed to Erin Crofton at Stratton Finance Wanneroo.
+                I consent to Stratton Finance's brokers contacting me regarding my enquiry. My information will be handled in accordance with Stratton Finance's Privacy Policy.
               </span>
             </label>
 
@@ -558,6 +558,19 @@ export default function Finance() {
             </p>
           </form>
         )}
+      </section>
+
+      {/* Important Information — Stratton compliance-required disclaimer */}
+      <section className="pb-4 container mx-auto px-6 max-w-2xl">
+        <div className="rounded-2xl bg-white/3 border border-white/8 p-5">
+          <p className="text-[11px] uppercase tracking-widest text-white/40 font-semibold mb-2">Important Information</p>
+          <p className="text-xs text-white/40 leading-relaxed">
+            All applications for credit are subject to lender credit assessment and eligibility criteria.
+            Terms, conditions, fees and charges apply. Stratton Finance Pty Ltd Australian Credit Licence 364340.
+            MissingCash may receive a financial benefit for any referrals to Stratton Finance if your loan
+            settles with one of their panel lenders.
+          </p>
+        </div>
       </section>
 
       {/* Trust badges */}
