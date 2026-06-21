@@ -560,38 +560,24 @@ export default function Finance() {
         )}
       </section>
 
-      {/* Important Information — Stratton compliance-required disclaimer */}
-      <section className="pb-4 container mx-auto px-6 max-w-2xl">
-        <div className="rounded-2xl bg-white/3 border border-white/8 p-5">
-          <p className="text-[11px] uppercase tracking-widest text-white/40 font-semibold mb-2">Important Information</p>
-          <p className="text-xs text-white/40 leading-relaxed">
-            All applications for credit are subject to lender credit assessment and eligibility criteria.
-            Terms, conditions, fees and charges apply. Stratton Finance Pty Ltd Australian Credit Licence 364340.
-            MissingCash may receive a financial benefit for any referrals to Stratton Finance if your loan
-            settles with one of their panel lenders.
-          </p>
-        </div>
-      </section>
-
-      {/* Trust badges */}
-      <section className="py-12 border-t border-white/6">
-        <div className="container mx-auto px-6 max-w-4xl">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { icon: Shield, label: "ACL 364340", sub: "Australian Credit Licence" },
-              { icon: Star, label: "4.8 / 5", sub: "Google Reviews" },
-              { icon: CheckCircle2, label: "40+ Lenders", sub: "Access to major banks" },
-              { icon: Phone, label: "0432 280 181", sub: "Call Erin directly" },
-            ].map(({ icon: Icon, label, sub }) => (
-              <div key={label} className="flex flex-col items-center text-center gap-1.5 p-4 rounded-2xl bg-white/3 border border-white/8">
-                <Icon className="w-5 h-5 text-[#F5B942] mb-1" />
-                <p className="text-sm font-bold text-white">{label}</p>
-                <p className="text-xs text-white/40">{sub}</p>
+      {/* IMPORTANT INFORMATION */}
+            <section className="py-10 border-t border-white/6 bg-[#060E1C]">
+              <div className="container mx-auto px-6 max-w-7xl">
+                <p className="text-xs font-semibold text-white/40 mb-3 uppercase tracking-widest">Important Information</p>
+                <p className="text-xs text-white/30 leading-relaxed mb-2 max-w-4xl">
+                  All applications for credit are subject to lender credit assessment and eligibility criteria. Terms, conditions, fees and charges apply. Stratton Finance Pty Ltd Australian Credit Licence 364340.
+                </p>
+                <p className="text-xs text-white/30 leading-relaxed max-w-4xl">
+                  MissingCash (ABN 52 347 989 391) may receive a financial benefit for any referrals to Stratton Finance if your loan settles with one of their panel lenders.
+                </p>
+                <div className="flex flex-wrap items-center gap-5 mt-5">
+                  <span className="text-xs text-white/25 flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-[#F5B942]/50" /> ACL 364340</span>
+                  <span className="text-xs text-white/25 flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#F5B942]/50" /> FBAA Member 103514</span>
+                  <span className="text-xs text-white/25 flex items-center gap-1.5"><Star className="w-3.5 h-3.5 text-[#F5B942]/50" /> Best Car Loans 2021–2026 · ProductReview</span>
+                  <span className="text-xs text-white/25 flex items-center gap-1.5"><Star className="w-3.5 h-3.5 text-[#F5B942]/50" /> Best Large-Size Brokerage 2023–2024 · WeMoney</span>
+                </div>
               </div>
-            ))}
+            </section>
           </div>
-        </div>
-      </section>
-    </div>
-  );
-}
+        );
+      }
