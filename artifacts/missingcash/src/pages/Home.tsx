@@ -145,20 +145,23 @@ export default function Home() {
           <a href="/finance" className="block max-w-3xl mx-auto">
             <div className="rounded-2xl bg-white/5 border border-white/10 hover:border-primary/40 transition-all p-5 flex flex-col sm:flex-row items-center gap-5 group cursor-pointer">
               {/* Left: logo + gift card stacked */}
-              <div className="flex-shrink-0 flex flex-col items-center gap-1">
+              <div className="flex-shrink-0 flex flex-col items-center gap-2">
                 <div className="bg-white rounded-xl px-5 py-3 shadow-sm">
                   <img src="/stratton-logo.png" alt="Stratton Finance" className="h-8 w-auto" />
                 </div>
-                <span className="text-sm font-black text-white">$100</span>
-                <img src="/fuel-gift-card.png" alt="Fuel Gift Card" className="h-16 w-auto rounded-lg shadow-md" />
-                <span className="text-xs font-bold text-primary uppercase tracking-widest">MissingCash</span>
+                <div className="relative">
+                  <img src="/fuel-gift-card.png" alt="Fuel Gift Card" className="h-20 w-auto rounded-lg shadow-md" />
+                  <span className="absolute left-2 top-1 font-black text-white text-sm leading-none drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">$100</span>
+                  <span className="absolute inset-x-0 top-[30px] text-center font-black text-yellow-400 text-base leading-none bg-[#0070a8] py-0.5">FUEL CARD</span>
+                  <span className="absolute inset-x-0 bottom-1 text-center font-bold text-yellow-300 text-[9px] uppercase tracking-[0.1em] leading-none">MISSING CASH</span>
+                </div>
               </div>
               {/* Middle: text */}
               <div className="text-center sm:text-left flex-1 min-w-0">
                 <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-0.5">Finance Partner</p>
                 <p className="text-white font-bold text-base leading-snug">Need a car, personal or business loan?</p>
                 <p className="text-muted-foreground text-sm">Speak to our trusted broker — fast approvals, competitive rates.</p>
-                <p className="text-xs font-semibold text-primary mt-1">⚡ Sign up before end of financial year — $100 compliments from MissingCash!</p>
+                <p className="text-xs font-semibold text-primary mt-1">⚡ Sign up before end of financial year — Receive $100!</p>
               </div>
               {/* Right: CTA */}
               <div className="flex-shrink-0">
