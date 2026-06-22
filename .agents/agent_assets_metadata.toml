@@ -186,6 +186,18 @@ uri = "file://attached_assets/generated_images/bp-promo-story.png"
 type = "image"
 title = "BP $100 fuel voucher story format"
 
+[[generated]]
+id = "wuAgs-cicu9UtdmTXSwh8"
+uri = "file://attached_assets/generated_images/bp-promo-social-v2.png"
+type = "image"
+title = "BP promo square sign up Stratton"
+
+[[generated]]
+id = "HsGPQHXiIdDh3tIwZWOdE"
+uri = "file://attached_assets/generated_images/bp-promo-story-v2.png"
+type = "image"
+title = "BP promo story sign up Stratton"
+
 [[outputs]]
 id = "7D1S3OguPzzP5KldYUnpB"
 uri = "file://artifacts/missingcash/public/ellie-email.txt"
@@ -227,3 +239,15 @@ id = "Kkg_nxdwqJTwC4_kIsWMT"
 uri = "file://attached_assets/generated_images/bp-promo-story.png"
 type = "image"
 title = "Vertical story (TikTok / Instagram Stories)"
+
+[[outputs]]
+id = "DCpe0drk-ja3yrcdKoro7"
+uri = "file://attached_assets/generated_images/bp-promo-social-v2.png"
+type = "image"
+title = "Square post — Sign up today with Stratton Finance"
+
+[[outputs]]
+id = "ZaLTH627opPGlySckyQzL"
+uri = "file://attached_assets/generated_images/bp-promo-story-v2.png"
+type = "image"
+title = "Vertical story — Sign up today with Stratton Finance"
