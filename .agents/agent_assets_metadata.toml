@@ -246,6 +246,18 @@ uri = "file://attached_assets/generated_images/bp-promo-story-final.png"
 type = "image"
 title = "BP promo final story"
 
+[[generated]]
+id = "Zph6irJyRlQpHuB4L2QRS"
+uri = "file://attached_assets/generated_images/bp-promo-social-branded.png"
+type = "image"
+title = "BP promo branded colours square"
+
+[[generated]]
+id = "Hv1xOZQyBl4d-5-3g6MG_"
+uri = "file://attached_assets/generated_images/bp-promo-story-branded.png"
+type = "image"
+title = "BP promo branded colours story"
+
 [[outputs]]
 id = "7D1S3OguPzzP5KldYUnpB"
 uri = "file://artifacts/missingcash/public/ellie-email.txt"
@@ -347,3 +359,15 @@ id = "5Bp4ICS_H4ApHq7XCkZe-"
 uri = "file://attached_assets/generated_images/bp-promo-story-final.png"
 type = "image"
 title = "Vertical story — Receive from MissingCash"
+
+[[outputs]]
+id = "zYqgDH6WqlPk2pLquK_M7"
+uri = "file://attached_assets/generated_images/bp-promo-social-branded.png"
+type = "image"
+title = "Square post — site colours (navy + gold)"
+
+[[outputs]]
+id = "6X6S2tCh7p8Zfqb3ka3P8"
+uri = "file://attached_assets/generated_images/bp-promo-story-branded.png"
+type = "image"
+title = "Vertical story — site colours (navy + gold)"
