@@ -15,7 +15,7 @@ breaks if you do it later.
 PART A — THE SHORT VERSION (READ THIS FIRST)
 #####################################################
 
- - Your ad page is LIVE and working: https://YOURSITE/start
+ - Your ad page is LIVE and working: https://missingcash.com.au/start
  - When someone enquires, it SAVES to your database AND emails you
    at admin@missingcash.com.au. (Tested live — confirmed working.)
  - You are clear to start running TikTok ads now.
@@ -33,8 +33,8 @@ PART B — YOUR LANDING PAGE
 
 Send ALL your ad traffic to this one page:
 
-    https://YOURSITE/start
-    (Replace YOURSITE with your live web address.)
+    https://missingcash.com.au/start
+    (This is your live site — already up and working.)
 
 It contains:
  - The "is the government holding money that's yours?" hook + live counter
@@ -49,7 +49,7 @@ PART C — AD TRACKING (HOW TO KNOW WHAT'S WORKING)
 
 Add a tag to the end of your link like this:
 
-    https://YOURSITE/start?v=cars1
+    https://missingcash.com.au/start?v=cars1
 
 The "?v=cars1" part is the tag. It travels WITH the link wherever you
 put it — video ad, post, bio link, email, banner. Whoever clicks that
@@ -57,10 +57,10 @@ exact link gets counted under that tag, and the tag shows up in the
 lead email so you know where it came from.
 
 GIVE EACH PLACE ITS OWN TAG:
-    Video ad #1   ->  https://YOURSITE/start?v=cars1
-    Video ad #2   ->  https://YOURSITE/start?v=cars2
-    A post        ->  https://YOURSITE/start?v=post1
-    Link in bio   ->  https://YOURSITE/start?v=bio
+    Video ad #1   ->  https://missingcash.com.au/start?v=cars1
+    Video ad #2   ->  https://missingcash.com.au/start?v=cars2
+    A post        ->  https://missingcash.com.au/start?v=post1
+    Link in bio   ->  https://missingcash.com.au/start?v=bio
 (You can name tags anything short with no spaces: ?v=super1, etc.)
 
 THE ONLY RULE:
@@ -135,9 +135,11 @@ STEP-BY-STEP:
  3. Resend will show you a list of DNS records (these look like a few
     rows of DKIM / SPF / sometimes DMARC entries). Keep that page open.
 
- 4. Log in to wherever your domain's DNS is managed (for missingcash
-    this is Cloudflare). Add each record EXACTLY as Resend shows it
-    (copy/paste the name and value for each one).
+ 4. Add those records in CLOUDFLARE (not Crazy Domains).
+    - You BOUGHT the domain at Crazy Domains (that's just the shop).
+    - But CLOUDFLARE controls where it points, so all DNS records go there.
+    Log in to Cloudflare, open missingcash.com.au, go to "DNS", and add
+    each record EXACTLY as Resend shows it (copy/paste name + value).
 
  5. Go back to Resend and wait for the domain to show "Verified".
     This can take a few minutes to a few hours after the DNS records
@@ -178,10 +180,54 @@ later if you'd like.
 
 
 #####################################################
+PART I — HOW IT ALL CONNECTS (THE BIG PICTURE)
+#####################################################
+
+Think of your setup as a chain. Here's each link, and who's in charge:
+
+1) YOUR DOMAIN NAME:  missingcash.com.au
+   - Bought from:    Crazy Domains  (the "shop" — where you renew it)
+   - Controlled by:  Cloudflare     (the "switchboard" — decides where the
+                                      name points and holds the DNS records)
+   >> So ANY records you ever add (for the website OR for Resend email)
+      go in CLOUDFLARE, not Crazy Domains.
+
+2) DNS  (the switchboard, inside Cloudflare):
+   - One set of records points missingcash.com.au -> your live website.
+     (This is already DONE — your site is live.)
+   - Another set (added later) proves to Resend you own the domain, so it
+     can send branded email. (This is the "one job left" in Part F.)
+
+3) WEBSITE + BACKEND + DATABASE:  all hosted on REPLIT
+   - The website = your pages, including /start
+   - The backend = the small server that catches form submissions:
+        /api/finance/enquiry   -> finance leads
+        /api/alerts/subscribe  -> email alert signups
+   - The database = stores every lead
+   NOTE: your site is NOT on Cloudflare "Pages" or "Workers" — those are
+   Cloudflare's own hosting tools. You're hosted on Replit. Here Cloudflare
+   is ONLY acting as your DNS switchboard.
+
+4) RESEND:  the separate service that emails leads to
+   admin@missingcash.com.au
+
+CURRENT LIVE STATUS (all checked and working):
+   - https://missingcash.com.au         -> WORKING
+   - https://missingcash.com.au/start   -> WORKING
+   - Leads save to database + email you -> WORKING
+
+WHO DO I LOG INTO FOR WHAT:
+   - Buy / renew the domain ............. Crazy Domains
+   - Point the domain / add DNS records . Cloudflare
+   - Website, backend, database ........ Replit
+   - Lead emails ....................... Resend
+
+
+#####################################################
 QUICK REFERENCE
 #####################################################
 
- Landing page .......... https://YOURSITE/start
+ Landing page .......... https://missingcash.com.au/start
  Lead inbox ............ admin@missingcash.com.au
  Sends from (now) ...... leads@lensflow.com.au
  Sends from (later) .... leads@missingcash.com.au
@@ -190,6 +236,10 @@ QUICK REFERENCE
  Secret key name ....... RESEND_API_KEY  (stored safely in Replit, not here)
  The "go branded" switch  MISSINGCASH_DOMAIN_VERIFIED = true (I set this)
  Domain to verify ...... missingcash.com.au
+ Domain registrar ...... Crazy Domains (where you bought / renew it)
+ DNS control ........... Cloudflare (where ALL DNS records go)
+ Website + backend ..... Replit (hosting)
+ Site status ........... LIVE (missingcash.com.au is up and working)
 
 =====================================================
 Stuck on anything? Just message me — no rush, I'll pick
