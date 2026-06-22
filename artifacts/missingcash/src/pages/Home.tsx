@@ -149,11 +149,10 @@ export default function Home() {
                 <div className="bg-white rounded-xl px-5 py-3 shadow-sm">
                   <img src="/stratton-logo.png" alt="Stratton Finance" className="h-8 w-auto" />
                 </div>
-                <div className="relative">
-                  <img src="/fuel-gift-card.png" alt="Fuel Gift Card" className="h-20 w-auto rounded-lg shadow-md" />
-                  <span className="absolute left-2 top-1 font-black text-white text-sm leading-none drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">$100</span>
-                  <span className="absolute inset-x-0 top-[30px] text-center font-black text-yellow-400 text-base leading-none bg-[#0070a8] py-0.5">FUEL CARD</span>
-                  <span className="absolute inset-x-0 bottom-1 text-center font-bold text-yellow-300 text-[9px] uppercase tracking-[0.1em] leading-none">MISSING CASH</span>
+                <div className="bg-[#0077b8] rounded-xl px-6 py-4 flex flex-col items-center gap-2 shadow-md">
+                  <span className="font-black text-white text-2xl leading-none">$100</span>
+                  <span className="font-black text-yellow-400 text-lg leading-none tracking-wide">FUEL CARD</span>
+                  <span className="font-bold text-yellow-300 text-xs tracking-widest leading-none uppercase">MISSING CASH</span>
                 </div>
               </div>
               {/* Middle: text */}
