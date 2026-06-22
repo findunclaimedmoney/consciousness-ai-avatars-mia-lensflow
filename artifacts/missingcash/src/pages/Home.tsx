@@ -144,18 +144,25 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <a href="/finance" className="block max-w-3xl mx-auto">
             <div className="rounded-2xl bg-white/5 border border-white/10 hover:border-primary/40 transition-all p-5 flex flex-col sm:flex-row items-center gap-5 group cursor-pointer">
-              <div className="bg-white rounded-xl px-5 py-3 flex-shrink-0 shadow-sm">
-                <img src="/stratton-logo.png" alt="Stratton Finance" className="h-9 w-auto" />
+              {/* Left: logo + gift card stacked */}
+              <div className="flex-shrink-0 flex flex-col items-center gap-2">
+                <div className="bg-white rounded-xl px-5 py-3 shadow-sm">
+                  <img src="/stratton-logo.png" alt="Stratton Finance" className="h-8 w-auto" />
+                </div>
+                <div className="relative">
+                  <img src="/fuel-gift-card.png" alt="$100 Fuel Gift Card" className="h-16 w-auto rounded-lg shadow-md" />
+                  <span className="absolute inset-x-0 top-0.5 text-center font-black text-white text-lg drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] leading-none">$100</span>
+                </div>
+                <span className="text-xs font-bold text-primary uppercase tracking-widest">MissingCash</span>
               </div>
-              <div className="text-center sm:text-left flex-1">
+              {/* Middle: text */}
+              <div className="text-center sm:text-left flex-1 min-w-0">
                 <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-0.5">Finance Partner</p>
                 <p className="text-white font-bold text-base leading-snug">Need a car, personal or business loan?</p>
-                <p className="text-muted-foreground text-sm mb-2">Speak to our trusted broker — fast approvals, competitive rates.</p>
-                <div className="inline-flex items-center gap-1.5 bg-primary/15 border border-primary/30 rounded-full px-3 py-1">
-                  <span className="text-lg leading-none">⛽</span>
-                  <span className="text-xs font-bold text-primary">Sign up before end of financial year — receive a $100 fuel voucher, compliments of MissingCash</span>
-                </div>
+                <p className="text-muted-foreground text-sm">Speak to our trusted broker — fast approvals, competitive rates.</p>
+                <p className="text-xs font-semibold text-primary mt-1">⚡ Sign up before end of financial year &amp; receive a $100 fuel voucher!</p>
               </div>
+              {/* Right: CTA */}
               <div className="flex-shrink-0">
                 <span className="inline-flex items-center gap-2 bg-primary text-primary-foreground font-bold px-5 py-2.5 rounded-full text-sm group-hover:bg-primary/90 transition-colors">
                   Get Finance <ChevronRight className="w-4 h-4" />
