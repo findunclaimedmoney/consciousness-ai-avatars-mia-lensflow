@@ -19,7 +19,9 @@ Used for any button linking back to Stratton. Must stay on ONE line with NO spac
 - Consent checkbox wording follows Stratton's pre-approved text (brokers contacting you + handled per Stratton's Privacy Policy).
 - **The pack cannot be used on the LensFlow website.** This is WHY lead emails must be sent FROM a `@missingcash.com.au` address, not `lensflow.com.au` — a LensFlow-origin lead to Stratton would breach the agreement.
 
-**Why it matters:** switching the lead email's from-address from lensflow→missingcash, and routing the lead to `integrations@stratton.com.au`, are gated together on `missingcash.com.au` being VERIFIED in Resend. Sending to Stratton from an unverified/lensflow address either fails or breaches compliance — do both changes at once, only after the domain shows Verified, then submit a test lead.
+**Why it matters:** switching the lead email's from-address from lensflow→missingcash, CC'ing Erin (`erin.crofton@stratton.com.au`), and routing the lead to `integrations@stratton.com.au`, are all gated together on `missingcash.com.au` being VERIFIED in Resend. Sending to Stratton from an unverified/lensflow address either fails or breaches compliance — flip them together, only after the domain shows Verified, then submit a test lead.
+
+**How it's wired (single switch):** the finance route gates on env `MISSINGCASH_DOMAIN_VERIFIED`. Default/unset = lensflow sender, no Erin CC (compliant, nothing reaches Stratton). Set it to `"true"` (exact string) and redeploy AFTER the domain is verified → branded `leads@missingcash.com.au` sender + Erin CC switch on together. Do NOT flip it before the domain shows Verified in Resend.
 
 ## Phase 2 (gift card promo)
 On hold ~1 month pending Stratton's risk & compliance team. Build nothing for it until they approve.

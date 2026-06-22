@@ -6,8 +6,18 @@ import { Resend } from "resend";
 
 const router: IRouter = Router();
 
-const LEAD_FROM = "MissingCash Enquiries <leads@lensflow.com.au>";
+// Stratton-compliant email routing.
+// Until missingcash.com.au is verified in Resend, leads send FROM the lensflow
+// address and Erin is NOT copied — Stratton's agreement forbids leads reaching
+// them from a lensflow origin. Once the domain is verified, set
+// MISSINGCASH_DOMAIN_VERIFIED=true and redeploy: leads then send from the
+// branded missingcash address AND Erin Crofton is CC'd on every lead.
+const DOMAIN_VERIFIED = process.env.MISSINGCASH_DOMAIN_VERIFIED === "true";
+const LEAD_FROM = DOMAIN_VERIFIED
+  ? "MissingCash Enquiries <leads@missingcash.com.au>"
+  : "MissingCash Enquiries <leads@lensflow.com.au>";
 const LEAD_TO = "admin@missingcash.com.au";
+const LEAD_CC: string[] = DOMAIN_VERIFIED ? ["erin.crofton@stratton.com.au"] : [];
 
 function escapeHtml(value: string): string {
   return value
@@ -18,7 +28,7 @@ function escapeHtml(value: string): string {
     .replace(/'/g, "&#39;");
 }
 
-function formatLeadEmail(data: FinanceEnquiryBody, enquiryId: number | null) {
+function formatLeadEmail(data: FinanceEnquiryBody, enquiryId: number | null, source: string | null) {
   const idLabel = enquiryId !== null ? `#${enquiryId}` : "(not saved to database)";
   const fullName = `${data.firstName} ${data.lastName}`;
   const monthly = data.estimatedMonthly ? `$${Math.round(data.estimatedMonthly).toLocaleString()}/mo` : "—";
@@ -33,6 +43,7 @@ function formatLeadEmail(data: FinanceEnquiryBody, enquiryId: number | null) {
     ["Estimated repayment", monthly],
     ["Message", data.message?.trim() || "—"],
   ];
+  if (source) rows.push(["Campaign / video", source]);
 
   const text = [
     `New finance enquiry ${idLabel}`,
@@ -69,6 +80,14 @@ router.post("/finance/enquiry", async (req, res) => {
 
   const data = parsed.data;
 
+  // Optional marketing attribution (e.g. ?v=cars1 / utm_*) — captured in the lead
+  // email so each enquiry shows which TikTok video / campaign drove it.
+  const rawSource = (req.body as { source?: unknown })?.source;
+  const source =
+    typeof rawSource === "string" && rawSource.trim()
+      ? rawSource.trim().replace(/[\r\n]+/g, " ").slice(0, 120)
+      : null;
+
   // 1) Try to save to the database. A DB failure must NOT lose the lead.
   let enquiryId: number | null = null;
   try {
@@ -80,7 +99,7 @@ router.post("/finance/enquiry", async (req, res) => {
       })
       .returning({ id: financeEnquiriesTable.id });
     enquiryId = row.id;
-    req.log.info({ enquiryId, email: data.email, loanType: data.loanType }, "Finance enquiry saved");
+    req.log.info({ enquiryId, email: data.email, loanType: data.loanType, source }, "Finance enquiry saved");
   } catch (err) {
     req.log.error({ err, email: data.email }, "Finance enquiry DB save failed — will still email the lead");
   }
@@ -91,12 +110,15 @@ router.post("/finance/enquiry", async (req, res) => {
   if (apiKey) {
     try {
       const resend = new Resend(apiKey);
-      const { text, html } = formatLeadEmail(data, enquiryId);
+      const { text, html } = formatLeadEmail(data, enquiryId, source);
       const { error } = await resend.emails.send({
         from: LEAD_FROM,
         to: LEAD_TO,
+        ...(LEAD_CC.length > 0 ? { cc: LEAD_CC } : {}),
         replyTo: data.email,
-        subject: `New finance enquiry from ${data.firstName} ${data.lastName}`,
+        subject: source
+          ? `New finance enquiry from ${data.firstName} ${data.lastName} (via ${source})`
+          : `New finance enquiry from ${data.firstName} ${data.lastName}`,
         text,
         html,
       });
@@ -113,7 +135,7 @@ router.post("/finance/enquiry", async (req, res) => {
     req.log.warn({ enquiryId }, "RESEND_API_KEY not set — skipping finance enquiry email");
   }
 
-  // 3) As long as the lead landed somewhere (DB or email), confirm success to the customer.
+  // 3) As long as the lead landed somewhere (DB or email), confirm success.
   if (enquiryId !== null || emailSent) {
     res.status(201).json({ success: true, enquiryId, emailSent });
     return;

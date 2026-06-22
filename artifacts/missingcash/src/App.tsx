@@ -15,25 +15,32 @@ import FindMyMoney from "@/pages/FindMyMoney";
 import AustraliaMap from "@/pages/AustraliaMap";
 import DeceasedEstate from "@/pages/DeceasedEstate";
 import LotteryChecker from "@/pages/LotteryChecker";
+import Landing from "@/pages/Landing";
 
 function Router() {
   return (
-    <Layout>
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/crypto" component={Crypto} />
-        <Route path="/finance" component={Finance} />
-        <Route path="/contact" component={Contact} />
-        <Route path="/privacy" component={Privacy} />
-        <Route path="/guides" component={Guides} />
-        <Route path="/find-my-money" component={FindMyMoney} />
-        <Route path="/unclaimed-money-map" component={AustraliaMap} />
-        <Route path="/deceased-estate" component={DeceasedEstate} />
-        <Route path="/lottery-checker" component={LotteryChecker} />
-        <Route path="/thank-you/:guide" component={ThankYou} />
-        <Route component={NotFound} />
-      </Switch>
-    </Layout>
+    <Switch>
+      {/* Distraction-free marketing landing page — no global nav/footer */}
+      <Route path="/start" component={Landing} />
+      <Route>
+        <Layout>
+          <Switch>
+            <Route path="/" component={Home} />
+            <Route path="/crypto" component={Crypto} />
+            <Route path="/finance" component={Finance} />
+            <Route path="/contact" component={Contact} />
+            <Route path="/privacy" component={Privacy} />
+            <Route path="/guides" component={Guides} />
+            <Route path="/find-my-money" component={FindMyMoney} />
+            <Route path="/unclaimed-money-map" component={AustraliaMap} />
+            <Route path="/deceased-estate" component={DeceasedEstate} />
+            <Route path="/lottery-checker" component={LotteryChecker} />
+            <Route path="/thank-you/:guide" component={ThankYou} />
+            <Route component={NotFound} />
+          </Switch>
+        </Layout>
+      </Route>
+    </Switch>
   );
 }
 
