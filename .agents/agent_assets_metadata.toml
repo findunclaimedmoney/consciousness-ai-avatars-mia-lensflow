@@ -197,3 +197,9 @@ id = "MDf8sAI6z24iYNn9N-Ycn"
 uri = "file://MissingCash-Ad-Tracking-Guide.txt"
 type = "text"
 title = "MissingCash Ad Tracking & Launch Guide"
+
+[[outputs]]
+id = "4IpDHF4r-hfy83y75C3YI"
+uri = "file://MissingCash-Guide.txt"
+type = "text"
+title = "MissingCash — Complete Guide (All in One)"

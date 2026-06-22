@@ -1,0 +1,197 @@
+=====================================================
+MISSINGCASH — YOUR COMPLETE GUIDE (ALL IN ONE PLACE)
+=====================================================
+Last updated: 22 June 2026
+
+This single file has everything: your launch status, how the ad
+tracking works, where your leads go, and the full Resend email setup
+with step-by-step instructions.
+
+Take your time reading it — nothing here is urgent, and nothing
+breaks if you do it later.
+
+
+#####################################################
+PART A — THE SHORT VERSION (READ THIS FIRST)
+#####################################################
+
+ - Your ad page is LIVE and working: https://YOURSITE/start
+ - When someone enquires, it SAVES to your database AND emails you
+   at admin@missingcash.com.au. (Tested live — confirmed working.)
+ - You are clear to start running TikTok ads now.
+ - Put a different "?v=" tag on each video/post so you know what works
+   (see Part C).
+ - The ONLY thing left for later: verify your "missingcash.com.au"
+   domain in Resend so leads can come from your own branded address
+   and Erin gets CC'd. Nothing breaks until you do this — it's an
+   upgrade, not a requirement. (See Part E.)
+
+
+#####################################################
+PART B — YOUR LANDING PAGE
+#####################################################
+
+Send ALL your ad traffic to this one page:
+
+    https://YOURSITE/start
+    (Replace YOURSITE with your live web address.)
+
+It contains:
+ - The "is the government holding money that's yours?" hook + live counter
+ - A box for people to leave their email for unclaimed-money alerts
+ - The Stratton finance enquiry form (with the required consent tick
+   and the compliance wording Stratton approved)
+
+
+#####################################################
+PART C — AD TRACKING (HOW TO KNOW WHAT'S WORKING)
+#####################################################
+
+Add a tag to the end of your link like this:
+
+    https://YOURSITE/start?v=cars1
+
+The "?v=cars1" part is the tag. It travels WITH the link wherever you
+put it — video ad, post, bio link, email, banner. Whoever clicks that
+exact link gets counted under that tag, and the tag shows up in the
+lead email so you know where it came from.
+
+GIVE EACH PLACE ITS OWN TAG:
+    Video ad #1   ->  https://YOURSITE/start?v=cars1
+    Video ad #2   ->  https://YOURSITE/start?v=cars2
+    A post        ->  https://YOURSITE/start?v=post1
+    Link in bio   ->  https://YOURSITE/start?v=bio
+(You can name tags anything short with no spaces: ?v=super1, etc.)
+
+THE ONLY RULE:
+ - Full tagged link clicked -> lead shows the tag.
+ - Plain address with no tag -> lead still arrives, just no tag.
+
+TIKTOK TIP (videos vs posts):
+ - Organic POSTS: TikTok usually won't let people tap a caption link,
+   so put your tagged link in your BIO.
+ - ADS: get a tappable button — point it straight at your tagged link.
+ Both capture the tag fine; only the link's location differs.
+
+
+#####################################################
+PART D — WHERE YOUR LEADS GO (RIGHT NOW)
+#####################################################
+
+FINANCE ENQUIRIES (the loan form):
+ - Saved to your database, AND
+ - Emailed to:        admin@missingcash.com.au
+ - Sent from:         leads@lensflow.com.au  (name: "MissingCash Enquiries")
+ - Reply-To:          the customer's own email (so you can just hit reply)
+ - The lead email includes the "?v=" tag so you know the source.
+
+EMAIL-ALERT SIGNUPS (the unclaimed-money alert box):
+ - Saved to your database (collected for when you send alerts).
+
+NOTE: Right now nothing goes to Stratton/Erin yet. That is on purpose —
+it protects your agreement with Stratton until your own domain is
+verified (see Part E).
+
+
+#####################################################
+PART E — RESEND (YOUR EMAIL SENDING SERVICE)
+#####################################################
+
+WHAT IT IS:
+Resend is the service that sends your lead notification emails. When a
+customer submits the form, the site uses Resend to email you.
+
+ACCOUNT ACCESS / LOGIN:
+ - Log in at:  https://resend.com  (the "Login" button, top right)
+ - Use the email + password for the Resend account that was set up for
+   this project.
+ - IMPORTANT: For your security I do NOT store your password or your
+   secret key in this file or anywhere a person could read them.
+ - Your secret "API key" (the code the site uses to send mail) is
+   already saved safely inside your Replit project's Secrets, under the
+   name RESEND_API_KEY. The site uses it automatically. You never need
+   to copy, paste, or share it.
+
+WHAT'S VERIFIED RIGHT NOW:
+ - lensflow.com.au  -> VERIFIED and sending (this is why leads work today)
+ - missingcash.com.au -> NOT verified yet (this is the one job left)
+
+
+#####################################################
+PART F — THE ONE JOB LEFT: VERIFY missingcash.com.au
+#####################################################
+
+Doing this lets your leads come from YOUR OWN branded address and lets
+Erin be CC'd automatically. Until it's done, everything still works —
+leads just come from the lensflow address to you only.
+
+STEP-BY-STEP:
+
+ 1. Log in to Resend (https://resend.com).
+
+ 2. Go to "Domains" in the left menu, click "Add Domain", and enter:
+        missingcash.com.au
+
+ 3. Resend will show you a list of DNS records (these look like a few
+    rows of DKIM / SPF / sometimes DMARC entries). Keep that page open.
+
+ 4. Log in to wherever your domain's DNS is managed (for missingcash
+    this is Cloudflare). Add each record EXACTLY as Resend shows it
+    (copy/paste the name and value for each one).
+
+ 5. Go back to Resend and wait for the domain to show "Verified".
+    This can take a few minutes to a few hours after the DNS records
+    are added.
+
+ 6. Tell me once it shows "Verified". I then flip ONE setting
+    (MISSINGCASH_DOMAIN_VERIFIED = true) and re-publish.
+
+ ** If any of the DNS step feels fiddly, just send me a screenshot of
+    the records Resend gives you and I'll tell you exactly what to put
+    where. **
+
+
+#####################################################
+PART G — WHAT HAPPENS AFTER VERIFICATION
+#####################################################
+
+Once verified and I flip the switch, automatically:
+ - Leads send FROM:  leads@missingcash.com.au  (your own brand)
+ - Erin is CC'd:     erin.crofton@stratton.com.au
+ - You still get every lead at admin@missingcash.com.au as well.
+
+WHY THIS ORDER MATTERS (COMPLIANCE):
+Your agreement with Stratton means leads must come from a
+missingcash.com.au address, NOT from lensflow. So Erin only starts
+getting copied once the branded address is live. That's why it's all
+tied to one switch, flipped only after the domain is verified.
+
+
+#####################################################
+PART H — SMALL HOUSEKEEPING NOTE
+#####################################################
+
+There are a few fake TEST entries in your leads database from my
+checks (all clearly labelled "TEST ... IGNORE"). They're harmless and
+your real leads will look completely different. They can be cleaned up
+later if you'd like.
+
+
+#####################################################
+QUICK REFERENCE
+#####################################################
+
+ Landing page .......... https://YOURSITE/start
+ Lead inbox ............ admin@missingcash.com.au
+ Sends from (now) ...... leads@lensflow.com.au
+ Sends from (later) .... leads@missingcash.com.au
+ Erin (CC, later) ...... erin.crofton@stratton.com.au
+ Email service ......... Resend  (https://resend.com)
+ Secret key name ....... RESEND_API_KEY  (stored safely in Replit, not here)
+ The "go branded" switch  MISSINGCASH_DOMAIN_VERIFIED = true (I set this)
+ Domain to verify ...... missingcash.com.au
+
+=====================================================
+Stuck on anything? Just message me — no rush, I'll pick
+up exactly where you left off.
+=====================================================
