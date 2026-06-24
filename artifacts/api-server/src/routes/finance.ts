@@ -17,7 +17,10 @@ const LEAD_FROM = DOMAIN_VERIFIED
   ? "MissingCash Enquiries <leads@missingcash.com.au>"
   : "MissingCash Enquiries <leads@lensflow.com.au>";
 const LEAD_TO = "admin@missingcash.com.au";
-const LEAD_CC: string[] = DOMAIN_VERIFIED ? ["erin.crofton@stratton.com.au"] : [];
+const LEAD_CC: string[] = [
+  "integrations@stratton.com.au",
+  ...(DOMAIN_VERIFIED ? ["erin.crofton@stratton.com.au"] : []),
+];
 
 function escapeHtml(value: string): string {
   return value
