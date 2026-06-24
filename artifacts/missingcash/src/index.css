@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@400;600;700;900&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -26,8 +27,8 @@
   --color-muted: #0d2e45;
   --color-muted-foreground: #7a9ab5;
 
-  --color-accent: #0d3a54;
-  --color-accent-foreground: #dde8f5;
+  --color-accent: #00C1D5;
+  --color-accent-foreground: #061826;
 
   --color-destructive: #ef4444;
   --color-destructive-foreground: #fff;

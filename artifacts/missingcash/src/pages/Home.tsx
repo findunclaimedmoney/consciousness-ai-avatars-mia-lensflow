@@ -263,9 +263,12 @@ export default function Home() {
                       <Zap className="w-6 h-6 text-[#00C1D5]" />
                     </div>
                     <h4 className="font-heading text-base text-white mb-1">MIA DOES THE SEARCH</h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed mb-4 flex-1">
-                      Mia searches every database using your details and emails you a full personalised report in minutes.
-                    </p>
+                    <ul className="text-left text-xs text-muted-foreground space-y-1.5 mb-4 flex-1">
+                      <li className="flex items-start gap-1.5"><span className="text-[#00C1D5] mt-0.5">⚡</span><span>Scans <strong className="text-white">100+ pages</strong> of MoneySmart automatically</span></li>
+                      <li className="flex items-start gap-1.5"><span className="text-[#00C1D5] mt-0.5">🔍</span><span>Searches <strong className="text-white">10+ databases</strong> — ATO, ASIC, all state offices, share registries, Fair Work &amp; more</span></li>
+                      <li className="flex items-start gap-1.5"><span className="text-[#00C1D5] mt-0.5">📄</span><span>Personalised PDF with <strong className="text-white">your exact name &amp; DOB</strong> pre-filled for every database</span></li>
+                      <li className="flex items-start gap-1.5"><span className="text-[#00C1D5] mt-0.5">📧</span><span>Report <strong className="text-white">emailed to you in minutes</strong> — zero effort on your part</span></li>
+                    </ul>
                     <a href="https://buy.stripe.com/5kQdR82TWdc9eMR2rS4c80i" target="_blank" rel="noopener noreferrer">
                       <Button className="w-full font-bold tracking-wider bg-[#00C1D5] hover:bg-[#00C1D5]/90 text-white shadow-[0_4px_14px_rgba(0,193,213,0.35)]">
                         MIA DO IT — $99
