@@ -9,7 +9,6 @@ const STRIPE = {
   identity: "https://buy.stripe.com/28EcN46686NLdIN8Qg4c80e",
   bundle: "https://buy.stripe.com/cNi14m9ikdc93492rS4c80g",
   miaRecovery: "https://buy.stripe.com/5kQdR82TWdc9eMR2rS4c80i",
-  doneForYou: "https://buy.stripe.com/8x2eVc524goleMR6I84c80h",
 };
 
 const guides = [
@@ -112,55 +111,7 @@ export default function Guides() {
         </div>
       </section>
 
-      {/* Done For You — top-tier hero product */}
-      <section className="pb-4">
-        <div className="container mx-auto px-4 max-w-3xl">
-          <div className="relative rounded-2xl border-2 border-primary/60 p-8 bg-gradient-to-br from-primary/10 via-background to-primary/5 shadow-[0_0_60px_rgba(245,185,66,0.12)] overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-[#00C1D5] to-primary" />
-            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-xs font-bold px-5 py-1.5 rounded-full tracking-wider">
-              ⭐ BEST VALUE · DONE FOR YOU
-            </div>
-
-            <div className="flex flex-col md:flex-row items-center gap-8 mt-2">
-              <div className="text-7xl shrink-0">🔍</div>
-              <div className="flex-1 text-center md:text-left">
-                <h2 className="text-3xl font-heading tracking-wider text-white mb-1">DONE FOR YOU SEARCH</h2>
-                <p className="text-lg font-semibold text-primary mb-3">You pay once. We search everything. You get the results.</p>
-                <p className="text-muted-foreground mb-4 leading-relaxed">
-                  Our team searches all 8 Australian unclaimed money databases on your behalf and emails you a full results report within 48 hours. You don't have to click anything, navigate any government site, or spend a single minute searching.
-                </p>
-                <ul className="space-y-1.5 mb-6 text-sm text-left">
-                  {[
-                    "We search ATO, ASIC/MoneySmart, all 6 state revenue offices",
-                    "We check rental bond authorities, share registries, and lotteries",
-                    "Full results report emailed to you within 48 hours",
-                    "Includes claim instructions for every dollar we find",
-                    "Mia available for unlimited follow-up questions",
-                  ].map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-muted-foreground">
-                      <span className="text-primary mt-0.5 shrink-0">✓</span> {f}
-                    </li>
-                  ))}
-                </ul>
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <div>
-                    <span className="text-4xl font-bold text-primary">$149</span>
-                    <span className="text-sm text-muted-foreground ml-2">one-time · results within 48 hours</span>
-                  </div>
-                  <a href={STRIPE.doneForYou} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                    <Button className="w-full h-14 px-8 text-lg font-bold tracking-wider rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-[0_4px_20px_rgba(245,185,66,0.4)]">
-                      ⭐ Do It For Me — $149
-                    </Button>
-                  </a>
-                </div>
-                <p className="text-xs text-muted-foreground mt-3">🔒 Secure via Stripe · You'll be asked for your details after payment · 48-hour turnaround guaranteed</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Mia Speed Recovery — guided hero product */}
+      {/* Mia Speed Recovery — hero product */}
       <section className="pb-6">
         <div className="container mx-auto px-4 max-w-3xl">
           <div className="relative rounded-2xl border-2 border-[#00C1D5]/50 p-8 bg-gradient-to-br from-[#00C1D5]/10 via-background to-primary/5 shadow-[0_0_60px_rgba(0,193,213,0.12)] overflow-hidden">
@@ -175,15 +126,15 @@ export default function Guides() {
                 <h2 className="text-3xl font-heading tracking-wider text-white mb-1">MIA SPEED RECOVERY</h2>
                 <p className="text-lg font-semibold text-[#00C1D5] mb-3">What takes months on your own — Mia does in minutes.</p>
                 <p className="text-muted-foreground mb-4 leading-relaxed">
-                  Finding unclaimed money yourself means months of navigating ATO portals, ASIC registers, state databases, and bank systems — most people give up. With Mia, you're guided through every single database in one conversation, right now.
+                  Searching 8 Australian databases yourself takes weeks — ATO portals, ASIC registers, state offices, share registries. Mia does it all for you using your name and date of birth, and emails you a full personalised report in minutes.
                 </p>
                 <ul className="space-y-1.5 mb-6 text-sm text-left">
                   {[
-                    "Mia activates the second your payment clears",
-                    "Guides you live through ATO, ASIC, myGov & all state registers",
-                    "No forms to navigate, no phone queues, no months of waiting",
-                    "Covers crypto recovery, cyber security & identity protection too",
-                    "Ask unlimited questions — Mia stays with you until it's done",
+                    "Pay once — Mia immediately starts researching every Australian database using your name & date of birth",
+                    "Covers ATO, ASIC/MoneySmart, all 8 state revenue offices, share registries, Fair Work & more",
+                    "You receive a full personalised written report emailed to you within minutes",
+                    "Includes step-by-step claim instructions for every dollar found in your name",
+                    "Ask Mia unlimited follow-up questions via chat",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2 text-muted-foreground">
                       <span className="text-[#00C1D5] mt-0.5 shrink-0">✓</span> {f}
@@ -193,15 +144,15 @@ export default function Guides() {
                 <div className="flex flex-col sm:flex-row items-center gap-4">
                   <div>
                     <span className="text-4xl font-bold text-primary">$99</span>
-                    <span className="text-sm text-muted-foreground ml-2">one-time · Mia activates instantly</span>
+                    <span className="text-sm text-muted-foreground ml-2">one-time · report emailed in minutes</span>
                   </div>
                   <a href={STRIPE.miaRecovery} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
                     <Button className="w-full h-14 px-8 text-lg font-bold tracking-wider rounded-xl bg-[#00C1D5] hover:bg-[#00C1D5]/90 text-white shadow-[0_4px_20px_rgba(0,193,213,0.4)]">
-                      ⚡ Get Mia Speed Recovery — $99
+                      ⚡ Get Mia Speed Research — $99
                     </Button>
                   </a>
                 </div>
-                <p className="text-xs text-muted-foreground mt-3">🔒 Secure via Stripe · 30-day money-back guarantee</p>
+                <p className="text-xs text-muted-foreground mt-3">🔒 Secure via Stripe · You'll be emailed a link to submit your details · Report delivered in minutes</p>
               </div>
             </div>
           </div>

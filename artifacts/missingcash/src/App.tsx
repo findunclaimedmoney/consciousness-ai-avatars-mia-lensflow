@@ -16,6 +16,7 @@ import AustraliaMap from "@/pages/AustraliaMap";
 import DeceasedEstate from "@/pages/DeceasedEstate";
 import LotteryChecker from "@/pages/LotteryChecker";
 import Landing from "@/pages/Landing";
+import MiaResearch from "@/pages/MiaResearch";
 
 function Router() {
   return (
@@ -32,6 +33,7 @@ function Router() {
             <Route path="/privacy" component={Privacy} />
             <Route path="/guides" component={Guides} />
             <Route path="/find-my-money" component={FindMyMoney} />
+            <Route path="/mia-research" component={MiaResearch} />
             <Route path="/unclaimed-money-map" component={AustraliaMap} />
             <Route path="/deceased-estate" component={DeceasedEstate} />
             <Route path="/lottery-checker" component={LotteryChecker} />

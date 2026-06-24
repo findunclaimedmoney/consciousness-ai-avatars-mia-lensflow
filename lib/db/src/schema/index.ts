@@ -47,3 +47,22 @@ export const financeEnquiriesTable = pgTable("finance_enquiries", {
 export const insertFinanceEnquirySchema = createInsertSchema(financeEnquiriesTable).omit({ id: true, createdAt: true });
 export type InsertFinanceEnquiry = z.infer<typeof insertFinanceEnquirySchema>;
 export type FinanceEnquiry = typeof financeEnquiriesTable.$inferSelect;
+
+export const miaResearchRequestsTable = pgTable("mia_research_requests", {
+  id: serial("id").primaryKey(),
+  stripeSessionId: text("stripe_session_id").notNull().unique(),
+  email: text("email").notNull(),
+  customerName: text("customer_name").notNull(),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  dob: text("dob"),
+  currentAddress: text("current_address"),
+  previousAddresses: text("previous_addresses"),
+  previousSurnames: text("previous_surnames"),
+  reportSentAt: timestamp("report_sent_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const insertMiaResearchRequestSchema = createInsertSchema(miaResearchRequestsTable).omit({ id: true, createdAt: true, reportSentAt: true });
+export type InsertMiaResearchRequest = z.infer<typeof insertMiaResearchRequestSchema>;
+export type MiaResearchRequest = typeof miaResearchRequestsTable.$inferSelect;
