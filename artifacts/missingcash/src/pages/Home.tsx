@@ -247,7 +247,7 @@ export default function Home() {
                     <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                       Our team searches all 8 Australian databases for you and emails your full results within 48 hours.
                     </p>
-                    <a href="https://buy.stripe.com/PLACEHOLDER_DONE_FOR_YOU" target="_blank" rel="noopener noreferrer">
+                    <a href="https://buy.stripe.com/8x2eVc524goleMR6I84c80h" target="_blank" rel="noopener noreferrer">
                       <Button size="lg" className="w-full h-14 text-lg font-bold tracking-wider rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_4px_14px_rgba(245,185,66,0.4)] transition-all" data-testid="button-done-for-you">
                         DO IT FOR ME — $149
                       </Button>
@@ -261,7 +261,7 @@ export default function Home() {
                     <p className="text-sm text-muted-foreground mb-3 leading-relaxed">
                       Mia guides you live through every database right now, step by step.
                     </p>
-                    <a href="https://buy.stripe.com/PLACEHOLDER_MIA_RECOVERY" target="_blank" rel="noopener noreferrer">
+                    <a href="https://buy.stripe.com/5kQdR82TWdc9eMR2rS4c80i" target="_blank" rel="noopener noreferrer">
                       <Button size="lg" className="w-full h-11 text-base font-bold tracking-wider rounded-xl bg-[#00C1D5] text-white hover:bg-[#00C1D5]/90 transition-all">
                         GUIDE ME NOW — $99
                       </Button>

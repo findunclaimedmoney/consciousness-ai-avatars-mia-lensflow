@@ -8,8 +8,8 @@ const STRIPE = {
   cyber: "https://buy.stripe.com/5kQbJ0eCEgolgUZ6I84c80d",
   identity: "https://buy.stripe.com/28EcN46686NLdIN8Qg4c80e",
   bundle: "https://buy.stripe.com/cNi14m9ikdc93492rS4c80g",
-  miaRecovery: "https://buy.stripe.com/PLACEHOLDER_MIA_RECOVERY",
-  doneForYou: "https://buy.stripe.com/PLACEHOLDER_DONE_FOR_YOU",
+  miaRecovery: "https://buy.stripe.com/5kQdR82TWdc9eMR2rS4c80i",
+  doneForYou: "https://buy.stripe.com/8x2eVc524goleMR6I84c80h",
 };
 
 const guides = [
