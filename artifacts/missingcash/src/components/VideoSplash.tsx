@@ -6,7 +6,7 @@ import { Scene3 } from "./video/video_scenes/Scene3";
 import { Scene4 } from "./video/video_scenes/Scene4";
 import { Scene5 } from "./video/video_scenes/Scene5";
 
-const SCENE_DURATIONS = [6000, 10000, 8000, 10000, 10000];
+const SCENE_DURATIONS = [11000, 13000, 11000, 12000, 8000];
 
 const bgPositions = [
   'radial-gradient(circle at 50% 50%, rgba(6,24,38,1) 0%, rgba(0,0,0,1) 100%)',
@@ -31,16 +31,13 @@ export default function VideoSplash({ onDone }: Props) {
     const a = new Audio("/mia-splash.mp3");
     a.preload = "auto";
     audio.current = a;
+    a.addEventListener("ended", handleDone);
 
     const playScene = (index: number) => {
       setCurrentScene(index);
       if (index === 0) a.play().catch(() => {});
       sceneTimer.current = setTimeout(() => {
-        if (index + 1 >= SCENE_DURATIONS.length) {
-          handleDone();
-        } else {
-          playScene(index + 1);
-        }
+        if (index + 1 < SCENE_DURATIONS.length) playScene(index + 1);
       }, SCENE_DURATIONS[index]);
     };
 
@@ -48,6 +45,7 @@ export default function VideoSplash({ onDone }: Props) {
 
     return () => {
       if (sceneTimer.current) clearTimeout(sceneTimer.current);
+      a.removeEventListener("ended", handleDone);
       a.pause();
       a.currentTime = 0;
     };
