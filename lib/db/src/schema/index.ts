@@ -99,3 +99,19 @@ export const miaFreeSearchesTable = pgTable("mia_free_searches", {
 });
 
 export type MiaFreeSearch = typeof miaFreeSearchesTable.$inferSelect;
+
+export const autoSearchResultsTable = pgTable("auto_search_results", {
+  id: serial("id").primaryKey(),
+  sourceTable: text("source_table").notNull(),
+  sourceId: integer("source_id").notNull(),
+  email: text("email").notNull(),
+  firstName: text("first_name").notNull(),
+  lastName: text("last_name").notNull(),
+  phone: text("phone"),
+  freeSearchId: integer("free_search_id"),
+  status: text("status").notNull().default("searching"),
+  totalAmountCents: integer("total_amount_cents"),
+  searchedAt: timestamp("searched_at").notNull().defaultNow(),
+});
+
+export type AutoSearchResult = typeof autoSearchResultsTable.$inferSelect;
