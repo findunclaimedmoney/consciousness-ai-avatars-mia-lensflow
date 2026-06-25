@@ -205,37 +205,59 @@ function formScraper(sourceKey: string, sourceName: string, baseUrl: string, ext
   };
 }
 
-const scrapeNSW = formScraper("nsw", "NSW Revenue", "https://unclaimed.revenue.nsw.gov.au/");
-const scrapeVIC = formScraper("vic", "VIC SRO", "https://www.sro.vic.gov.au/unclaimedmoneys");
-const scrapeQLD = formScraper("qld", "QLD Treasury", "https://www.treasury.qld.gov.au/programs-and-initiatives/unclaimed-money/");
-const scrapeSA  = formScraper("sa",  "SA RevenueSA", "https://www.revenuesa.sa.gov.au/grants-and-concessions/unclaimed-money");
+const scrapeNSW = formScraper("nsw", "NSW Revenue",   "https://unclaimed.revenue.nsw.gov.au/");
+const scrapeVIC = formScraper("vic", "VIC SRO",       "https://www.sro.vic.gov.au/unclaimed-money/search-your-unclaimed-money");
+const scrapeQLD = formScraper("qld", "QLD Treasury",  "https://www.treasury.qld.gov.au/programs-and-initiatives/unclaimed-money/");
+const scrapeSA  = formScraper("sa",  "SA RevenueSA",  "https://www.revenuesa.sa.gov.au/grants-and-concessions/unclaimed-money");
+const scrapeTAS = formScraper("tas", "TAS Treasury",  "https://www.treasury.tas.gov.au/Government/Unclaimed-Money");
+const scrapeNT  = formScraper("nt",  "NT Treasury",   "https://treasury.nt.gov.au/home/unclaimed-money");
+const scrapeACT = formScraper("act", "ACT Revenue",   "https://www.revenue.act.gov.au/unclaimed-money");
 
-async function scrapeWA(searchName: string, apiKey: string): Promise<SourceResult> {
+function extractSuburb(address: string): string {
+  const postcode = address.match(/\b(\d{4})\b/)?.[1];
+  if (postcode) return postcode;
+  const parts = address.split(/[,\n]+/).map((s) => s.trim()).filter(Boolean);
+  return parts[parts.length - 1] ?? "";
+}
+
+async function scrapeWA(searchName: string, apiKey: string, address?: string): Promise<SourceResult> {
   const sourceKey = "wa";
   const sourceName = "WA Unclaimed Monies (DTF)";
   try {
     const { first, last } = splitName(searchName);
     const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+    const suburb = address ? extractSuburb(address) : "WA";
 
     const fillFn = `
 (function(){
-  function setVal(sel,val){try{var el=document.querySelector(sel);if(el){el.value=val;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));return true;}}catch(e){}return false;}
-  var cb=document.querySelector('input[type="checkbox"]');
+  function setValById(id,val){
+    var el=document.getElementById(id);
+    if(!el)return false;
+    el.removeAttribute('disabled');
+    var nativeSetter=Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype,'value');
+    if(nativeSetter&&nativeSetter.set){nativeSetter.set.call(el,val);}else{el.value=val;}
+    el.dispatchEvent(new Event('input',{bubbles:true}));
+    el.dispatchEvent(new Event('change',{bubbles:true}));
+    return true;
+  }
+  var cb=document.getElementById('agreeTermsCheckBox');
   if(cb&&!cb.checked){cb.click();}
-  var nameSels=['input[id*="payee" i]','input[name*="payee" i]','input[placeholder*="payee" i]','input[placeholder*="name" i]','input[type="text"]'];
-  for(var i=0;i<nameSels.length;i++){if(setVal(nameSels[i],'${esc(first)} ${esc(last)}'))break;}
-  var btn=document.querySelector('input[type="submit"]')||document.querySelector('button[type="submit"]')||document.querySelector('button');
-  if(btn)btn.click();
+  setTimeout(function(){
+    setValById('payeeName','${esc(first)} ${esc(last)}');
+    setValById('address_2','${esc(suburb)}');
+    var btn=document.querySelector('button.search-btn')||document.querySelector('button[type="submit"]');
+    if(btn){btn.removeAttribute('disabled');btn.click();}
+  },2000);
 })()`.trim();
 
     const jsScenario = {
       instructions: [
-        { wait: 3000 },
+        { wait: 5000 },
         { evaluate: fillFn },
-        { wait: 4000 },
+        { wait: 6000 },
       ],
     };
-    const html = await fetchPage("https://search.unclaimedmonies.dtf.wa.gov.au/", apiKey, { wait: 9000, jsScenario });
+    const html = await fetchPage("https://search.unclaimedmonies.dtf.wa.gov.au/", apiKey, { wait: 14000, jsScenario });
     if (noResults(html)) return { sourceKey, sourceName, matches: [], scraped: true };
     return { sourceKey, sourceName, matches: parseHTML(html, searchName, sourceKey, sourceName), scraped: true };
   } catch (err) {
@@ -313,6 +335,7 @@ export async function searchAllSources(opts: {
   firstName: string;
   lastName: string;
   previousSurnames?: string;
+  address?: string;
 }): Promise<MultiSourceResults> {
   const apiKey = process.env.SCRAPINGBEE_API_KEY;
   if (!apiKey) {
@@ -335,9 +358,9 @@ export async function searchAllSources(opts: {
   for (const name of namesToSearch) {
     const { first, last } = splitName(name);
 
-    logger.info({ name }, "Starting multi-source search across 8 databases");
+    logger.info({ name }, "Starting multi-source search across 11 databases");
 
-    // ScrapingBee allows max 5 concurrent requests — run in two batches
+    // ScrapingBee allows max 5 concurrent requests — run in three batches
     const batch1 = await Promise.allSettled([
       searchMoneySmart({ firstName: first, lastName: last }).then((r): SourceResult => ({
         sourceKey: "moneysmart",
@@ -348,16 +371,22 @@ export async function searchAllSources(opts: {
       scrapeNSW(name, apiKey),
       scrapeVIC(name, apiKey),
       scrapeQLD(name, apiKey),
-      scrapeWA(name, apiKey),
+      scrapeWA(name, apiKey, opts.address),
     ]);
 
     const batch2 = await Promise.allSettled([
       scrapeSA(name, apiKey),
+      scrapeTAS(name, apiKey),
+      scrapeNT(name, apiKey),
+      scrapeACT(name, apiKey),
       scrapeComputershare(name, apiKey),
+    ]);
+
+    const batch3 = await Promise.allSettled([
       scrapeAFCA(name, apiKey),
     ]);
 
-    for (const r of [...batch1, ...batch2]) {
+    for (const r of [...batch1, ...batch2, ...batch3]) {
       if (r.status === "fulfilled") {
         allSourceResults.push(r.value);
         allMatches.push(...r.value.matches);

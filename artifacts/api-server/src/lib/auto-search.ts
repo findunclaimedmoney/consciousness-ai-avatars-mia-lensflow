@@ -330,7 +330,7 @@ async function runAutoSearch() {
 
     const searchId = searchRow!.id;
 
-    const results = await searchAllSources({ firstName: lead.firstName, lastName: lead.lastName });
+    const results = await searchAllSources({ firstName: lead.firstName, lastName: lead.lastName, address: lead.address || undefined });
     const validMatches = results.matches.filter((m) => m.name && m.holder !== undefined);
     let totalAmountCents = 0;
     for (const m of validMatches) totalAmountCents += parseAmountCents(m.amount);

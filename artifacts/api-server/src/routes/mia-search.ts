@@ -219,12 +219,13 @@ router.post("/mia/search/start", async (req, res) => {
 
   (async () => {
     try {
-      req.log.info({ searchId, firstName, lastName }, "Starting multi-source search (8 databases)");
+      req.log.info({ searchId, firstName, lastName }, "Starting multi-source search (11 databases)");
 
       const results = await searchAllSources({
         firstName,
         lastName,
         previousSurnames: previousSurnames || undefined,
+        address: currentAddress || undefined,
       });
 
       const validMatches = results.matches.filter((m) => m.name && m.holder !== undefined);
