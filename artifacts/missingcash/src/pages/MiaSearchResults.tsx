@@ -166,7 +166,7 @@ export default function MiaSearchResults() {
           <XCircle className="w-16 h-16 text-muted-foreground mx-auto mb-6" />
           <h1 className="text-3xl font-heading tracking-wider text-white mb-3">No Matches Found</h1>
           <p className="text-muted-foreground leading-relaxed mb-6">
-            Mia didn't find any unclaimed money in the public MoneySmart register for <strong className="text-white">{result.firstName}</strong>. No charge — as promised.
+            Mia searched 8 Australian government databases and didn't find any unclaimed money listed under <strong className="text-white">{result.firstName}</strong>'s name. No charge — as promised.
           </p>
           <div className="bg-card border border-border rounded-2xl p-5 mb-6 text-left">
             <p className="text-sm font-bold text-white mb-2">Want to check all 10+ databases yourself?</p>
