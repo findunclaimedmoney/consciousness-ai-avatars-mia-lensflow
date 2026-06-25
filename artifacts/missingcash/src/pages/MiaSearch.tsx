@@ -17,10 +17,22 @@ type FormData = {
   previousSurnames: string;
 };
 
-const empty: FormData = {
-  email: "", firstName: "", lastName: "", dob: "",
-  currentAddress: "", previousAddresses: "", previousSurnames: "",
-};
+function getInitialForm(): FormData {
+  try {
+    const p = new URLSearchParams(window.location.search);
+    return {
+      email: "",
+      firstName: p.get("firstName") ?? "",
+      lastName: p.get("lastName") ?? "",
+      dob: "",
+      currentAddress: "",
+      previousAddresses: "",
+      previousSurnames: "",
+    };
+  } catch {
+    return { email: "", firstName: "", lastName: "", dob: "", currentAddress: "", previousAddresses: "", previousSurnames: "" };
+  }
+}
 
 export default function MiaSearch() {
   usePageSEO({
@@ -29,7 +41,7 @@ export default function MiaSearch() {
   });
 
   const [, navigate] = useLocation();
-  const [form, setForm] = useState<FormData>(empty);
+  const [form, setForm] = useState<FormData>(getInitialForm);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
