@@ -208,8 +208,41 @@ function formScraper(sourceKey: string, sourceName: string, baseUrl: string, ext
 const scrapeNSW = formScraper("nsw", "NSW Revenue", "https://unclaimed.revenue.nsw.gov.au/");
 const scrapeVIC = formScraper("vic", "VIC SRO", "https://www.sro.vic.gov.au/unclaimedmoneys");
 const scrapeQLD = formScraper("qld", "QLD Treasury", "https://www.treasury.qld.gov.au/programs-and-initiatives/unclaimed-money/");
-const scrapeWA  = formScraper("wa",  "WA Finance",   "https://www.finance.wa.gov.au/cms/content.aspx?id=2022");
 const scrapeSA  = formScraper("sa",  "SA RevenueSA", "https://www.revenuesa.sa.gov.au/grants-and-concessions/unclaimed-money");
+
+async function scrapeWA(searchName: string, apiKey: string): Promise<SourceResult> {
+  const sourceKey = "wa";
+  const sourceName = "WA Unclaimed Monies (DTF)";
+  try {
+    const { first, last } = splitName(searchName);
+    const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+
+    const fillFn = `
+(function(){
+  function setVal(sel,val){try{var el=document.querySelector(sel);if(el){el.value=val;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));return true;}}catch(e){}return false;}
+  var cb=document.querySelector('input[type="checkbox"]');
+  if(cb&&!cb.checked){cb.click();}
+  var nameSels=['input[id*="payee" i]','input[name*="payee" i]','input[placeholder*="payee" i]','input[placeholder*="name" i]','input[type="text"]'];
+  for(var i=0;i<nameSels.length;i++){if(setVal(nameSels[i],'${esc(first)} ${esc(last)}'))break;}
+  var btn=document.querySelector('input[type="submit"]')||document.querySelector('button[type="submit"]')||document.querySelector('button');
+  if(btn)btn.click();
+})()`.trim();
+
+    const jsScenario = {
+      instructions: [
+        { wait: 3000 },
+        { evaluate: fillFn },
+        { wait: 4000 },
+      ],
+    };
+    const html = await fetchPage("https://search.unclaimedmonies.dtf.wa.gov.au/", apiKey, { wait: 9000, jsScenario });
+    if (noResults(html)) return { sourceKey, sourceName, matches: [], scraped: true };
+    return { sourceKey, sourceName, matches: parseHTML(html, searchName, sourceKey, sourceName), scraped: true };
+  } catch (err) {
+    logger.error({ err, sourceKey }, "Gov scraper failed");
+    return { sourceKey, sourceName, matches: [], scraped: false, error: String(err) };
+  }
+}
 
 async function scrapeComputershare(searchName: string, apiKey: string): Promise<SourceResult> {
   const sourceKey = "computershare";
