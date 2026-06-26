@@ -1,3 +1,4 @@
+- [Session start checklist](session-start-checklist.md) — READ handover.md FIRST before anything else. User passes it each session. Ignoring it = repeating questions already answered.
 - [Stratton Finance integration](stratton-integration.md) — finance-page partner integration: Option 1 = form emailed to integrations@stratton.com.au; required compliance disclaimer; lead from-address must be @missingcash.com.au (not lensflow), gated on Resend domain verification.
 - [Prod DB via Publish](missingcash-prod-database.md) — prod DB connected through the Publish flow (verified working: finance lead writes + email live); never script prod migrations; re-publish to ship code/schema.
 - [Finance lead emails (Resend)](missingcash-resend-leads.md) — lensflow.com.au verified & sending in prod (emailSent:true); branded missingcash sender + Erin CC gated behind verifying missingcash.com.au + MISSINGCASH_DOMAIN_VERIFIED=true.
