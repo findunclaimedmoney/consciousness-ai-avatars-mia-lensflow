@@ -87,19 +87,6 @@ export default function MiaSearch() {
           </p>
         </div>
 
-        <div className="rounded-2xl overflow-hidden mb-8 border border-border shadow-[0_4px_30px_rgba(0,193,213,0.15)]">
-          <iframe
-            width="560"
-            height="315"
-            src="https://app.heygen.com/embeds/141f8ed90fe7429d820546fc1c24d8bd"
-            title="Mia Does it for You."
-            frameBorder="0"
-            allow="encrypted-media; fullscreen;"
-            allowFullScreen
-            className="w-full aspect-video"
-          />
-        </div>
-
         <div className="grid grid-cols-3 gap-3 mb-8">
           {[
             { icon: Search, label: "Free search", sub: "No upfront cost" },
