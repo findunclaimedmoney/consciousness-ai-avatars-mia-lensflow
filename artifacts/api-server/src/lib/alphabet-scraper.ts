@@ -89,41 +89,88 @@ function hasNextPage(html: string, page: number): boolean {
   );
 }
 
-// ---------- crawl one letter ----------
+// ---------- top Australian surnames per letter ----------
+// Searching by surname avoids MoneySmart's bot detection (single-letter searches get blocked)
+
+const SURNAMES_BY_LETTER: Record<string, string[]> = {
+  A: ["Anderson", "Adams", "Allen", "Armstrong", "Andrews", "Alexander", "Abbott", "Ahmed", "Ali", "Atkinson"],
+  B: ["Brown", "Baker", "Bell", "Bennett", "Bailey", "Barnes", "Bishop", "Black", "Boyd", "Burns", "Butler"],
+  C: ["Campbell", "Carter", "Clark", "Clarke", "Collins", "Cook", "Cooper", "Cox", "Crawford", "Curtis"],
+  D: ["Davis", "Davies", "Dixon", "Duncan", "Davidson", "Dean", "Doyle", "Douglas", "Drew", "Dunn"],
+  E: ["Evans", "Edwards", "Elliott", "Ellis", "Eriksson", "Egan", "Eaton", "Edmonds", "Emery", "English"],
+  F: ["Fisher", "Foster", "Fox", "Fraser", "Freeman", "French", "Ferguson", "Field", "Fleming", "Flynn"],
+  G: ["Gibson", "Graham", "Grant", "Gray", "Green", "Griffin", "George", "Gordon", "Gardner", "Gilbert"],
+  H: ["Hall", "Harris", "Harrison", "Harvey", "Henderson", "Hill", "Holmes", "Howard", "Hughes", "Hunt"],
+  I: ["Ingram", "Irving", "Ivanov", "Ibrahim", "Irwin", "Ingham", "Irvine", "Izard", "Imrie", "Inglis"],
+  J: ["Jackson", "James", "Jenkins", "Johnson", "Jones", "Jordan", "Jensen", "Joyce", "Jeffrey", "Jacobs"],
+  K: ["Kelly", "Kennedy", "King", "Knight", "Kumar", "Khan", "Kemp", "Kerr", "Kirk", "Klein"],
+  L: ["Lane", "Lee", "Lewis", "Lloyd", "Long", "Lawson", "Lambert", "Lynch", "Lucas", "Lawrence"],
+  M: ["Martin", "Mason", "Matthews", "McDonald", "Mitchell", "Moore", "Morgan", "Morris", "Morrison", "Murray"],
+  N: ["Nelson", "Newman", "Newton", "Nguyen", "Nicholson", "Norman", "Nolan", "Neal", "Nash", "Norton"],
+  O: ["Oliver", "Owen", "O'Brien", "O'Connor", "O'Neill", "O'Sullivan", "Olsen", "Osborne", "Owens", "Ortega"],
+  P: ["Palmer", "Parker", "Patel", "Patterson", "Pearce", "Perry", "Peters", "Phillips", "Price", "Powell"],
+  Q: ["Quinn", "Quigley", "Quinlan", "Quick", "Quint", "Quartermaine", "Quayle", "Quest", "Queale", "Quinton"],
+  R: ["Reid", "Richards", "Richardson", "Roberts", "Robertson", "Robinson", "Rogers", "Ross", "Russell", "Ryan"],
+  S: ["Scott", "Shaw", "Simpson", "Singh", "Smith", "Spencer", "Stevens", "Stewart", "Sullivan", "Sutton"],
+  T: ["Taylor", "Thomas", "Thompson", "Thomson", "Turner", "Tucker", "Todd", "Tran", "Thornton", "Timms"],
+  U: ["Underwood", "Unsworth", "Upton", "Urquhart", "Usher", "Urban", "Ulrich", "Upham", "Uttley", "Underhill"],
+  V: ["Vincent", "Vance", "Vaughan", "Valentine", "Vargas", "Vasquez", "Victor", "Villa", "Vickers", "Vine"],
+  W: ["Walker", "Wallace", "Walsh", "Ward", "Watson", "Webb", "White", "Williams", "Wilson", "Wood"],
+  X: ["Xavier", "Xiao", "Xu", "Xenakis", "Xanthis", "Xenos", "Ximenes", "Xing", "Xiong", "Xue"],
+  Y: ["Young", "Yates", "Yang", "York", "Yuen", "Yip", "Yeoman", "Yates", "Yarwood", "Yeung"],
+  Z: ["Zhang", "Zhou", "Zimmermann", "Zito", "Zola", "Zorba", "Zander", "Zane", "Ziegler", "Zemansky"],
+};
+
+// ---------- crawl one letter (by surname list) ----------
 
 async function crawlMoneySmartLetter(letter: string, apiKey: string): Promise<{ matches: RawMatch[]; pages: number }> {
   const allMatches: RawMatch[] = [];
-  let pages = 0;
+  let totalPages = 0;
+  const surnames = SURNAMES_BY_LETTER[letter] ?? [letter];
+  const seen = new Set<string>();
 
-  for (let page = 1; page <= MAX_PAGES; page++) {
-    const encoded = encodeURIComponent(letter);
-    const url =
-      page === 1
-        ? `https://moneysmart.gov.au/find-unclaimed-money?name=${encoded}`
-        : `https://moneysmart.gov.au/find-unclaimed-money?name=${encoded}&page=${page}`;
+  for (const surname of surnames) {
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const encoded = encodeURIComponent(surname);
+      const url =
+        page === 1
+          ? `https://moneysmart.gov.au/find-unclaimed-money?name=${encoded}`
+          : `https://moneysmart.gov.au/find-unclaimed-money?name=${encoded}&page=${page}`;
 
-    logger.info({ letter, page }, "alphabet-scraper: MoneySmart page");
+      logger.info({ letter, surname, page }, "alphabet-scraper: MoneySmart page");
 
-    let html: string;
-    try {
-      html = await fetchPage(url, apiKey);
-    } catch (err) {
-      logger.error({ err, letter, page }, "alphabet-scraper: page fetch failed");
-      break;
+      let html: string;
+      try {
+        html = await fetchPage(url, apiKey);
+      } catch (err) {
+        logger.error({ err, letter, surname, page }, "alphabet-scraper: page fetch failed");
+        break;
+      }
+
+      totalPages++;
+      const pageMatches = parseMoneySmartRows(html);
+
+      // Deduplicate across surnames
+      for (const m of pageMatches) {
+        const key = `${m.name.toLowerCase()}|${m.amount}`;
+        if (!seen.has(key)) {
+          seen.add(key);
+          allMatches.push(m);
+        }
+      }
+
+      if (/no results found|no records found|0 results/i.test(html)) break;
+      if (pageMatches.length === 0) break;
+      if (!hasNextPage(html, page)) break;
+
+      await new Promise((r) => setTimeout(r, 800));
     }
 
-    pages++;
-    const pageMatches = parseMoneySmartRows(html);
-    allMatches.push(...pageMatches);
-
-    if (/no results found|no records found|0 results/i.test(html)) break;
-    if (pageMatches.length === 0) break;
-    if (!hasNextPage(html, page)) break;
-
-    await new Promise((r) => setTimeout(r, 700));
+    // Polite pause between surnames
+    await new Promise((r) => setTimeout(r, 1000));
   }
 
-  return { matches: allMatches, pages };
+  return { matches: allMatches, pages: totalPages };
 }
 
 function normalise(s: string): string {
