@@ -50,3 +50,4 @@ channel = "stable-25_05"
 
 [userenv.shared]
 ELEVENLABS_VOICE_ID = "x3PfG9wL6FOEApZ1VJ9H"
+ALPHABET_PIPELINE_ENABLED = "true"
