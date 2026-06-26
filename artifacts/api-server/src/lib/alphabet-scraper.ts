@@ -8,13 +8,6 @@ import { findContact, parseName } from "./contact-finder";
 
 const SCRAPINGBEE_API = "https://app.scrapingbee.com/api/v1/";
 
-const BROWSER_HEADERS = {
-  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-  "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-  "Accept-Language": "en-AU,en;q=0.9",
-  "Cache-Control": "no-cache",
-  "Pragma": "no-cache",
-};
 const MAX_PAGES = 60;
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
@@ -26,79 +19,9 @@ const FROM_ADDRESS =
     ? "MissingCash <leads@missingcash.com.au>"
     : "MissingCash <leads@lensflow.com.au>";
 
-// ---------- scraping helpers ----------
-
-function hasTableData(html: string): boolean {
-  return /<td/i.test(html) || /no results found|no records found|0 results/i.test(html);
-}
-
-async function fetchDirect(url: string): Promise<string | null> {
-  try {
-    const res = await fetch(url, {
-      headers: BROWSER_HEADERS,
-      signal: AbortSignal.timeout(20_000),
-    });
-    if (!res.ok) return null;
-    const html = await res.text();
-    return hasTableData(html) ? html : null;
-  } catch {
-    return null;
-  }
-}
-
-async function fetchViaScrapingBee(url: string, apiKey: string, renderJs: boolean): Promise<string | null> {
-  const params = new URLSearchParams({
-    api_key: apiKey,
-    url,
-    render_js: renderJs ? "true" : "false",
-    stealth_proxy: "true",
-    block_ads: "true",
-    country_code: "au",
-    ...(renderJs ? { wait_browser: "networkidle2", timeout: "15000" } : {}),
-  });
-
-  for (let attempt = 1; attempt <= 3; attempt++) {
-    try {
-      const res = await fetch(`${SCRAPINGBEE_API}?${params.toString()}`, {
-        signal: AbortSignal.timeout(90_000),
-      });
-      if (res.status === 404) return res.text();
-      if (!res.ok) {
-        const errBody = await res.text().catch(() => "");
-        throw new Error(`ScrapingBee ${res.status}${errBody ? `: ${errBody.slice(0, 120)}` : ""}`);
-      }
-      return res.text();
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
-      logger.warn({ url, attempt, renderJs, err: msg }, "alphabet-scraper: ScrapingBee attempt failed");
-      if (attempt < 3) await new Promise((r) => setTimeout(r, 4000 * attempt));
-    }
-  }
-  return null;
-}
-
-async function fetchPage(url: string, apiKey: string): Promise<string> {
-  // Tier 1: free direct fetch (works if the page does SSR)
-  const direct = await fetchDirect(url);
-  if (direct) {
-    logger.info({ url }, "alphabet-scraper: fetched direct (no ScrapingBee)");
-    return direct;
-  }
-
-  // Tier 2: ScrapingBee without JS rendering (faster, cheaper, fewer 500s)
-  const noJs = await fetchViaScrapingBee(url, apiKey, false);
-  if (noJs && hasTableData(noJs)) {
-    logger.info({ url }, "alphabet-scraper: fetched via ScrapingBee (no JS)");
-    return noJs;
-  }
-
-  // Tier 3: ScrapingBee with full JS rendering (most expensive, last resort)
-  logger.info({ url }, "alphabet-scraper: falling back to ScrapingBee with JS rendering");
-  const withJs = await fetchViaScrapingBee(url, apiKey, true);
-  if (withJs) return withJs;
-
-  throw new Error(`All fetch tiers failed for ${url}`);
-}
+// ---------- MoneySmart JSON API ----------
+// MoneySmart exposes /api/UnclaimedMoneyService/Detailed which returns JSON.
+// We route through ScrapingBee stealth proxy (no JS rendering needed for a JSON API).
 
 interface RawMatch {
   name: string;
@@ -107,37 +30,84 @@ interface RawMatch {
   state: string;
 }
 
-function parseMoneySmartRows(html: string): RawMatch[] {
-  const matches: RawMatch[] = [];
-  const rowPattern = /<tr[^>]*>([\s\S]*?)<\/tr>/gi;
-  let rowMatch: RegExpExecArray | null;
-  while ((rowMatch = rowPattern.exec(html)) !== null) {
-    const row = rowMatch[1];
-    const cells = [...row.matchAll(/<td[^>]*>([\s\S]*?)<\/td>/gi)].map((m) =>
-      m[1].replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&nbsp;/g, " ").trim()
-    );
-    if (cells.length >= 2 && cells[0] && cells[0].trim().length > 2) {
-      const amtMatch = (cells[1] ?? "").match(/\$[\d,]+(?:\.\d{2})?/);
-      if (amtMatch) {
-        matches.push({
-          name: cells[0].trim(),
-          amount: amtMatch[0],
-          holder: cells[2] ?? "",
-          state: cells[3] ?? "",
-        });
+const MONEYSMART_API_PAGE_SIZE = 50;
+
+async function fetchMoneySmartJson(
+  surname: string,
+  pageIndex: number,
+  apiKey: string
+): Promise<{ items: RawMatch[]; total: number } | null> {
+  const apiUrl = `https://moneysmart.gov.au/api/UnclaimedMoneyService/Detailed?accountName=${encodeURIComponent(surname)}&pageIndex=${pageIndex}&pageSize=${MONEYSMART_API_PAGE_SIZE}`;
+
+  const params = new URLSearchParams({
+    api_key: apiKey,
+    url: apiUrl,
+    render_js: "false",
+    stealth_proxy: "true",
+    block_ads: "true",
+    country_code: "au",
+  });
+
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const res = await fetch(`${SCRAPINGBEE_API}?${params.toString()}`, {
+        signal: AbortSignal.timeout(90_000),
+      });
+      if (!res.ok) {
+        const errBody = await res.text().catch(() => "");
+        throw new Error(`ScrapingBee ${res.status}: ${errBody.slice(0, 120)}`);
       }
+
+      const text = await res.text();
+
+      // ScrapingBee may wrap the JSON response in an HTML shell (<pre>…</pre>).
+      // Extract the outermost JSON object.
+      const jsonStart = text.indexOf("{");
+      const jsonEnd = text.lastIndexOf("}");
+      if (jsonStart === -1 || jsonEnd === -1) {
+        logger.warn({ surname, pageIndex }, "alphabet-scraper: no JSON object found in API response");
+        return null;
+      }
+      const raw = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+
+      // Unwrap ScrapingBee envelope if present: { statusCode, body }
+      const statusCode: number = raw.statusCode ?? 200;
+      if (statusCode !== 200) {
+        logger.warn({ surname, pageIndex, statusCode }, "alphabet-scraper: MoneySmart API non-200");
+        return null;
+      }
+      const body = raw.body ?? raw;
+
+      const total = parseInt(String(body.hitCount ?? body.totalCount ?? "0"), 10);
+
+      // Field name varies — try several candidates
+      const records: unknown[] = body.records ?? body.items ?? body.results ?? body.data ?? [];
+      if (!Array.isArray(records)) {
+        logger.warn(
+          { surname, pageIndex, bodyKeys: Object.keys(body) },
+          "alphabet-scraper: unexpected API body structure — please update field mapping"
+        );
+        return null;
+      }
+
+      const items: RawMatch[] = (records as Record<string, unknown>[])
+        .map((r) => ({
+          name: String(r.accountName ?? r.name ?? "").trim(),
+          amount: r.amount != null ? `$${parseFloat(String(r.amount)).toFixed(2)}` : "",
+          holder: String(r.holderName ?? r.source ?? r.organisation ?? r.holder ?? "").trim(),
+          state: String(r.state ?? r.address ?? "").trim(),
+        }))
+        .filter((item) => item.name.length > 1 && item.amount.length > 1);
+
+      logger.info({ surname, pageIndex, total, fetched: items.length }, "alphabet-scraper: MoneySmart API page");
+      return { items, total };
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      logger.warn({ surname, pageIndex, attempt, err: msg }, "alphabet-scraper: API fetch attempt failed");
+      if (attempt < 3) await new Promise((r) => setTimeout(r, 4000 * attempt));
     }
   }
-  return matches;
-}
-
-function hasNextPage(html: string, page: number): boolean {
-  return (
-    /rel=["']next["']/i.test(html) ||
-    /class="[^"]*next[^"]*"/i.test(html) ||
-    />\s*Next\s*</i.test(html) ||
-    new RegExp(`page=${page + 1}`, "i").test(html)
-  );
+  return null;
 }
 
 // ---------- top Australian surnames per letter ----------
@@ -181,28 +151,23 @@ async function crawlMoneySmartLetter(letter: string, apiKey: string): Promise<{ 
   const seen = new Set<string>();
 
   for (const surname of surnames) {
-    for (let page = 1; page <= MAX_PAGES; page++) {
-      const encoded = encodeURIComponent(surname);
-      const url =
-        page === 1
-          ? `https://moneysmart.gov.au/find-unclaimed-money?name=${encoded}`
-          : `https://moneysmart.gov.au/find-unclaimed-money?name=${encoded}&page=${page}`;
+    logger.info({ letter, surname }, "alphabet-scraper: starting surname via MoneySmart JSON API");
 
-      logger.info({ letter, surname, page }, "alphabet-scraper: MoneySmart page");
+    let totalHits = -1;
+    let pageIndex = 0;
 
-      let html: string;
-      try {
-        html = await fetchPage(url, apiKey);
-      } catch (err) {
-        logger.error({ err, letter, surname, page }, "alphabet-scraper: page fetch failed");
+    while (pageIndex < MAX_PAGES) {
+      const result = await fetchMoneySmartJson(surname, pageIndex, apiKey);
+
+      if (!result) {
+        logger.warn({ letter, surname, pageIndex }, "alphabet-scraper: API returned null, skipping surname");
         break;
       }
 
+      if (pageIndex === 0) totalHits = result.total;
       totalPages++;
-      const pageMatches = parseMoneySmartRows(html);
 
-      // Deduplicate across surnames
-      for (const m of pageMatches) {
+      for (const m of result.items) {
         const key = `${m.name.toLowerCase()}|${m.amount}`;
         if (!seen.has(key)) {
           seen.add(key);
@@ -210,10 +175,12 @@ async function crawlMoneySmartLetter(letter: string, apiKey: string): Promise<{ 
         }
       }
 
-      if (/no results found|no records found|0 results/i.test(html)) break;
-      if (pageMatches.length === 0) break;
-      if (!hasNextPage(html, page)) break;
+      // Stop if no more records or we've fetched all pages
+      if (result.items.length === 0) break;
+      const fetchedSoFar = (pageIndex + 1) * MONEYSMART_API_PAGE_SIZE;
+      if (totalHits >= 0 && fetchedSoFar >= totalHits) break;
 
+      pageIndex++;
       await new Promise((r) => setTimeout(r, 800));
     }
 
