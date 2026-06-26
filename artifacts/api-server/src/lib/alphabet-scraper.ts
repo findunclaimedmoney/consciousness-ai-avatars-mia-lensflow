@@ -3,10 +3,9 @@ import { prospectsTable, alphabetCrawlProgressTable, unsubscribesTable } from "@
 import { eq, and, sql, isNull } from "drizzle-orm";
 import { Resend } from "resend";
 import Stripe from "stripe";
+import twilio from "twilio";
 import { logger } from "./logger";
 import { findContact, parseName } from "./contact-finder";
-
-const SCRAPINGBEE_API = "https://app.scrapingbee.com/api/v1/";
 
 const MAX_PAGES = 60;
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -19,92 +18,69 @@ const FROM_ADDRESS =
     ? "MissingCash <leads@missingcash.com.au>"
     : "MissingCash <leads@lensflow.com.au>";
 
-// ---------- MoneySmart JSON API ----------
-// MoneySmart exposes /api/UnclaimedMoneyService/Detailed which returns JSON.
-// We route through ScrapingBee stealth proxy (no JS rendering needed for a JSON API).
+// ---------- WA Unclaimed Monies API ----------
+// Source: https://search.unclaimedmonies.dtf.wa.gov.au/
+// Public Elasticsearch endpoint — direct POST, no proxy, no auth needed.
+
+const WA_API = "https://search.unclaimedmonies.dtf.wa.gov.au/search/_search";
+const WA_PAGE_SIZE = 50;
 
 interface RawMatch {
   name: string;
   amount: string;
   holder: string;
   state: string;
+  description: string;
+  holderEmail: string;
+  holderPhone: string;
+  holderContactName: string;
 }
 
-const MONEYSMART_API_PAGE_SIZE = 50;
-
-async function fetchMoneySmartJson(
+async function fetchWAPage(
   surname: string,
-  pageIndex: number,
-  apiKey: string
+  from: number
 ): Promise<{ items: RawMatch[]; total: number } | null> {
-  const apiUrl = `https://moneysmart.gov.au/api/UnclaimedMoneyService/Detailed?accountName=${encodeURIComponent(surname)}&pageIndex=${pageIndex}&pageSize=${MONEYSMART_API_PAGE_SIZE}`;
-
-  const params = new URLSearchParams({
-    api_key: apiKey,
-    url: apiUrl,
-    render_js: "false",
-    stealth_proxy: "true",
-    block_ads: "true",
-    country_code: "au",
+  const body = JSON.stringify({
+    from,
+    size: WA_PAGE_SIZE,
+    query: { bool: { must: [{ match: { payee_name: surname } }] } },
   });
 
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const res = await fetch(`${SCRAPINGBEE_API}?${params.toString()}`, {
-        signal: AbortSignal.timeout(90_000),
+      const res = await fetch(WA_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+        signal: AbortSignal.timeout(20_000),
       });
-      if (!res.ok) {
-        const errBody = await res.text().catch(() => "");
-        throw new Error(`ScrapingBee ${res.status}: ${errBody.slice(0, 120)}`);
-      }
+      if (!res.ok) throw new Error(`WA API HTTP ${res.status}`);
 
-      const text = await res.text();
+      const data = await res.json() as {
+        hits: {
+          total: { value: number };
+          hits: Array<{ _source: Record<string, string> }>;
+        };
+      };
 
-      // ScrapingBee may wrap the JSON response in an HTML shell (<pre>…</pre>).
-      // Extract the outermost JSON object.
-      const jsonStart = text.indexOf("{");
-      const jsonEnd = text.lastIndexOf("}");
-      if (jsonStart === -1 || jsonEnd === -1) {
-        logger.warn({ surname, pageIndex }, "alphabet-scraper: no JSON object found in API response");
-        return null;
-      }
-      const raw = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+      const total = data.hits?.total?.value ?? 0;
+      const items: RawMatch[] = (data.hits?.hits ?? []).map(({ _source: s }) => ({
+        name: (s.payee_name ?? "").trim(),
+        amount: s.amount_unclaimed ? `$${parseFloat(s.amount_unclaimed).toFixed(2)}` : "",
+        holder: (s["payer_/_source"] ?? "").trim(),
+        state: (s.address_2 ?? "").trim(),
+        description: (s.description ?? "").trim(),
+        holderEmail: (s.holder_contact_email ?? "").trim(),
+        holderPhone: (s.holder_contact_phone ?? "").trim(),
+        holderContactName: (s.holder_contact_name ?? "").trim(),
+      })).filter((m) => m.name.length > 0 && m.amount.length > 1);
 
-      // Unwrap ScrapingBee envelope if present: { statusCode, body }
-      const statusCode: number = raw.statusCode ?? 200;
-      if (statusCode !== 200) {
-        logger.warn({ surname, pageIndex, statusCode }, "alphabet-scraper: MoneySmart API non-200");
-        return null;
-      }
-      const body = raw.body ?? raw;
-
-      const total = parseInt(String(body.hitCount ?? body.totalCount ?? "0"), 10);
-
-      // Field name varies — try several candidates
-      const records: unknown[] = body.records ?? body.items ?? body.results ?? body.data ?? [];
-      if (!Array.isArray(records)) {
-        logger.warn(
-          { surname, pageIndex, bodyKeys: Object.keys(body) },
-          "alphabet-scraper: unexpected API body structure — please update field mapping"
-        );
-        return null;
-      }
-
-      const items: RawMatch[] = (records as Record<string, unknown>[])
-        .map((r) => ({
-          name: String(r.accountName ?? r.name ?? "").trim(),
-          amount: r.amount != null ? `$${parseFloat(String(r.amount)).toFixed(2)}` : "",
-          holder: String(r.holderName ?? r.source ?? r.organisation ?? r.holder ?? "").trim(),
-          state: String(r.state ?? r.address ?? "").trim(),
-        }))
-        .filter((item) => item.name.length > 1 && item.amount.length > 1);
-
-      logger.info({ surname, pageIndex, total, fetched: items.length }, "alphabet-scraper: MoneySmart API page");
+      logger.info({ surname, from, total, fetched: items.length }, "alphabet-scraper: WA API page");
       return { items, total };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
-      logger.warn({ surname, pageIndex, attempt, err: msg }, "alphabet-scraper: API fetch attempt failed");
-      if (attempt < 3) await new Promise((r) => setTimeout(r, 4000 * attempt));
+      logger.warn({ surname, from, attempt, err: msg }, "alphabet-scraper: WA API fetch failed");
+      if (attempt < 3) await new Promise((r) => setTimeout(r, 2000 * attempt));
     }
   }
   return null;
@@ -144,27 +120,27 @@ const SURNAMES_BY_LETTER: Record<string, string[]> = {
 
 // ---------- crawl one letter (by surname list) ----------
 
-async function crawlMoneySmartLetter(letter: string, apiKey: string): Promise<{ matches: RawMatch[]; pages: number }> {
+async function crawlMoneySmartLetter(letter: string, _apiKey: string): Promise<{ matches: RawMatch[]; pages: number }> {
   const allMatches: RawMatch[] = [];
   let totalPages = 0;
   const surnames = SURNAMES_BY_LETTER[letter] ?? [letter];
   const seen = new Set<string>();
 
   for (const surname of surnames) {
-    logger.info({ letter, surname }, "alphabet-scraper: starting surname via MoneySmart JSON API");
+    logger.info({ letter, surname }, "alphabet-scraper: fetching WA unclaimed monies");
 
     let totalHits = -1;
-    let pageIndex = 0;
+    let from = 0;
 
-    while (pageIndex < MAX_PAGES) {
-      const result = await fetchMoneySmartJson(surname, pageIndex, apiKey);
+    while (from / WA_PAGE_SIZE < MAX_PAGES) {
+      const result = await fetchWAPage(surname, from);
 
       if (!result) {
-        logger.warn({ letter, surname, pageIndex }, "alphabet-scraper: API returned null, skipping surname");
+        logger.warn({ letter, surname, from }, "alphabet-scraper: WA API returned null, skipping surname");
         break;
       }
 
-      if (pageIndex === 0) totalHits = result.total;
+      if (from === 0) totalHits = result.total;
       totalPages++;
 
       for (const m of result.items) {
@@ -175,17 +151,14 @@ async function crawlMoneySmartLetter(letter: string, apiKey: string): Promise<{ 
         }
       }
 
-      // Stop if no more records or we've fetched all pages
       if (result.items.length === 0) break;
-      const fetchedSoFar = (pageIndex + 1) * MONEYSMART_API_PAGE_SIZE;
-      if (totalHits >= 0 && fetchedSoFar >= totalHits) break;
+      from += WA_PAGE_SIZE;
+      if (totalHits >= 0 && from >= totalHits) break;
 
-      pageIndex++;
-      await new Promise((r) => setTimeout(r, 800));
+      await new Promise((r) => setTimeout(r, 300));
     }
 
-    // Polite pause between surnames
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 500));
   }
 
   return { matches: allMatches, pages: totalPages };
@@ -200,7 +173,7 @@ async function insertProspects(letter: string, matches: RawMatch[]): Promise<num
 
   // Clear old records for this letter
   await db.delete(prospectsTable).where(
-    and(eq(prospectsTable.letter, letter), eq(prospectsTable.sourceKey, "moneysmart"))
+    and(eq(prospectsTable.letter, letter), eq(prospectsTable.sourceKey, "wa-dtf"))
   );
 
   const seen = new Set<string>();
@@ -216,8 +189,8 @@ async function insertProspects(letter: string, matches: RawMatch[]): Promise<num
       amount: m.amount,
       holder: m.holder || null,
       state: m.state || null,
-      source: "ASIC MoneySmart",
-      sourceKey: "moneysmart",
+      source: "WA Unclaimed Monies",
+      sourceKey: "wa-dtf",
       letter,
       contactStatus: "pending",
     }));
@@ -319,7 +292,7 @@ async function sendOutreachEmail(
     `Amount found in your name: ${amount}`,
     `Held by: ${holderName}`,
     ``,
-    `Data source: ASIC MoneySmart public register (https://moneysmart.gov.au/find-unclaimed-money)`,
+    `Data source: WA Unclaimed Monies register (https://www.wa.gov.au/organisation/department-of-treasury/unclaimed-monies)`,
     `Fee: ${pct}% of ${amount} = ${feeStr} (paid before claim instructions are released)`,
     ``,
     `Claim instructions are locked — the exact account references, claim forms, and step-by-step process are in your paid report.`,
@@ -387,20 +360,97 @@ async function sendOutreachEmail(
   }
 }
 
+async function sendOutreachSms(
+  phone: string,
+  name: string,
+  amount: string,
+  holder: string | null,
+  prospectId: number,
+): Promise<{ sent: boolean; stripeSessionId?: string; bodyText?: string }> {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const fromNumber = process.env.TWILIO_FROM_NUMBER;
+  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  if (!accountSid || !authToken || !fromNumber || !stripeKey) {
+    logger.warn("alphabet-scraper: SMS skipped — missing Twilio/Stripe env vars");
+    return { sent: false };
+  }
+
+  const parsed = parseName(name);
+  const firstName = parsed?.firstName ?? name.split(" ")[0] ?? name;
+  const dollars = parseAmountDollars(amount);
+  const { pct, cents, str: feeStr } = calcFee(dollars);
+  const holderName = holder || "an Australian government register";
+
+  let checkoutUrl: string;
+  let stripeSessionId: string;
+  try {
+    const stripe = new Stripe(stripeKey);
+    const session = await stripe.checkout.sessions.create({
+      mode: "payment",
+      line_items: [{
+        price_data: {
+          currency: "aud",
+          unit_amount: cents,
+          product_data: {
+            name: `MissingCash Claim Report — ${pct}% success fee`,
+            description: `Mia found ${amount} held by ${holderName}. Pay ${feeStr} to unlock your personalised step-by-step claim instructions.`,
+          },
+        },
+        quantity: 1,
+      }],
+      metadata: { product: "prospect-outreach", prospectId: String(prospectId) },
+      success_url: `${SITE_BASE}/mia-search/paid?prospect=${prospectId}`,
+      cancel_url: `${SITE_BASE}/`,
+    });
+    checkoutUrl = session.url!;
+    stripeSessionId = session.id;
+  } catch (err) {
+    logger.error({ err, phone, name }, "alphabet-scraper: Stripe session failed (SMS)");
+    return { sent: false };
+  }
+
+  // Normalise AU mobile to E.164 (+61...)
+  const e164 = phone.replace(/^0/, "+61").replace(/\s/g, "");
+
+  const body = `Hi ${firstName}, MissingCash found ${amount} in your name held by ${holderName}. Unlock your claim report (${feeStr} success fee): ${checkoutUrl}  Reply STOP to opt out.`;
+
+  const bodyText = [
+    `To: ${e164}`,
+    `From: ${fromNumber}`,
+    `Date: ${new Date().toISOString()}`,
+    `Stripe Session: ${stripeSessionId}`,
+    ``,
+    body,
+  ].join("\n");
+
+  try {
+    const client = twilio(accountSid, authToken);
+    await client.messages.create({ body, from: fromNumber, to: e164 });
+    logger.info({ phone: e164, name, stripeSessionId }, "alphabet-scraper: SMS sent");
+    return { sent: true, stripeSessionId, bodyText };
+  } catch (err) {
+    logger.error({ err, phone: e164, name }, "alphabet-scraper: SMS send failed");
+    return { sent: false };
+  }
+}
+
 async function contactSearchLetter(letter: string): Promise<{ found: number; emailed: number }> {
   let found = 0;
   let emailed = 0;
   let processed = 0;
 
   while (processed < MAX_CONTACTS_PER_LETTER) {
-    // Pick next pending prospect for this letter
+    // Pick next pending prospect — prioritise records with a comma (full name like "SMITH, JOHN")
+    // over bare surnames, which parseName can't use anyway.
     const rows = await db
       .select()
       .from(prospectsTable)
       .where(
         and(
           eq(prospectsTable.letter, letter),
-          eq(prospectsTable.contactStatus, "pending")
+          eq(prospectsTable.contactStatus, "pending"),
+          sql`name LIKE '%,%'`
         )
       )
       .limit(1);
@@ -426,6 +476,16 @@ async function contactSearchLetter(letter: string): Promise<{ found: number; ema
           outreachSentAt = new Date();
           stripeSessionId = result.stripeSessionId ?? null;
           outreachSubject = result.subject ?? null;
+          outreachBodyText = result.bodyText ?? null;
+        }
+      } else if (contact.phone) {
+        // No email — send SMS instead (same Stripe checkout link)
+        const result = await sendOutreachSms(contact.phone, prospect.name, prospect.amount, prospect.holder ?? null, prospect.id);
+        if (result.sent) {
+          emailed++;
+          outreachSentAt = new Date();
+          stripeSessionId = result.stripeSessionId ?? null;
+          outreachSubject = `SMS to ${contact.phone}`;
           outreachBodyText = result.bodyText ?? null;
         }
       }

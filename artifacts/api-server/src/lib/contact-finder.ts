@@ -20,7 +20,8 @@ function extractPhones(text: string): string[] {
 
 function extractEmails(text: string): string[] {
   const raw = text.match(/[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}/g) ?? [];
-  const blocked = ["example.com", "gmail.com" /* too generic */, "sentry.io", "w3.org"];
+  // Block only structural/noise domains — NOT real email providers like gmail/hotmail/yahoo
+  const blocked = ["example.com", "sentry.io", "w3.org", "scrapingbee.com", "cloudflare.com", "google.com", "bing.com", "duckduckgo.com"];
   return [...new Set(raw)].filter(
     (e) => !blocked.some((b) => e.endsWith(b)) && e.length < 80
   );
@@ -76,31 +77,39 @@ async function sbFetch(url: string, apiKey: string, renderJs = false): Promise<s
   return res.text();
 }
 
-// ---------- source 1: Google search ----------
+// ---------- source 1: DuckDuckGo search (no-JS, much less blocking than Google) ----------
 
-async function searchGoogle(name: string, state: string | null, apiKey: string): Promise<FoundContact | null> {
+async function searchDuckDuckGo(name: string, state: string | null, apiKey: string): Promise<FoundContact | null> {
+  const suburb = state ? state.replace(/\s+\d{4}$/, "").trim() : "Australia";
   const location = state ?? "Australia";
-  const query = encodeURIComponent(`"${name}" ${location} contact phone email`);
-  const url = `https://www.google.com.au/search?q=${query}&num=5&hl=en&gl=au`;
 
-  try {
-    const html = await sbFetch(url, apiKey, true);
-    const text = stripHtml(html);
+  // Pass 1: general contact search
+  const q1 = `"${name}" ${location} contact phone email`;
+  // Pass 2: email-specific dork
+  const q2 = `"${name}" ${suburb} email gmail hotmail yahoo bigpond iinet`;
 
-    const phones = extractPhones(text);
-    const emails = extractEmails(text);
+  for (const [idx, q] of [[0, q1], [1, q2]] as [number, string][]) {
+    const url = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(q)}&kl=au-en`;
+    try {
+      const html = await sbFetch(url, apiKey, false);
+      const text = stripHtml(html);
 
-    if (phones.length === 0 && emails.length === 0) return null;
+      const phones = extractPhones(text);
+      const emails = extractEmails(text);
 
-    return {
-      phone: phones[0],
-      email: emails[0],
-      source: "Google Search",
-    };
-  } catch (err) {
-    logger.warn({ err, name }, "contact-finder: Google search failed");
-    return null;
+      if (emails.length > 0) {
+        logger.info({ name, email: emails[0] }, "contact-finder: DDG email hit");
+        return { phone: phones[0], email: emails[0], source: "DuckDuckGo" };
+      }
+      if (phones.length > 0 && idx === 0) {
+        return { phone: phones[0], source: "DuckDuckGo" };
+      }
+    } catch (err) {
+      logger.warn({ err, name, pass: idx + 1 }, "contact-finder: DDG search failed");
+    }
+    await new Promise((r) => setTimeout(r, 400));
   }
+  return null;
 }
 
 // ---------- source 2: ABN lookup ----------
@@ -173,10 +182,10 @@ export async function findContact(
   const { firstName, lastName } = parsed;
 
   // Try sources in order, return first hit
-  const google = await searchGoogle(`${firstName} ${lastName}`, state, apiKey);
-  if (google?.phone || google?.email) {
-    logger.info({ name, phone: google.phone, email: google.email, source: google.source }, "contact-finder: hit");
-    return google;
+  const ddg = await searchDuckDuckGo(`${firstName} ${lastName}`, state, apiKey);
+  if (ddg?.phone || ddg?.email) {
+    logger.info({ name, phone: ddg.phone, email: ddg.email, source: ddg.source }, "contact-finder: hit");
+    return ddg;
   }
 
   await new Promise((r) => setTimeout(r, 500));
