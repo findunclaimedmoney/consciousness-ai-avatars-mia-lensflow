@@ -51,6 +51,7 @@ async function fetchViaScrapingBee(url: string, apiKey: string, renderJs: boolea
     api_key: apiKey,
     url,
     render_js: renderJs ? "true" : "false",
+    stealth_proxy: "true",
     block_ads: "true",
     country_code: "au",
     ...(renderJs ? { wait_browser: "networkidle2", timeout: "15000" } : {}),
