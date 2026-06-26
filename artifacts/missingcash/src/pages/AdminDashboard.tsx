@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -132,7 +132,13 @@ export default function AdminDashboard() {
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [loading, setLoading] = useState(false);
   const [pipelineMsg, setPipelineMsg] = useState("");
-  const [activeTab, setActiveTab] = useState<"traffic" | "pipeline">("traffic");
+  const [activeTab, setActiveTab] = useState<"traffic" | "pipeline" | "mia">("traffic");
+
+  // Boss-mode Mia chat state
+  const [miaMsgs, setMiaMsgs] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
+  const [miaInput, setMiaInput] = useState("");
+  const [miaStreaming, setMiaStreaming] = useState(false);
+  const miaChatRef = useRef<HTMLDivElement>(null);
 
   const fetchData = useCallback(async (pw: string) => {
     setLoading(true);
@@ -180,6 +186,54 @@ export default function AdminDashboard() {
     const a = document.createElement("a");
     a.href = url;
     a.click();
+  }
+
+  async function sendMiaMessage() {
+    const text = miaInput.trim();
+    if (!text || miaStreaming) return;
+    const userMsg: { role: "user" | "assistant"; content: string } = { role: "user", content: text };
+    const newMsgs = [...miaMsgs, userMsg];
+    setMiaMsgs(newMsgs);
+    setMiaInput("");
+    setMiaStreaming(true);
+
+    const placeholder: { role: "user" | "assistant"; content: string } = { role: "assistant", content: "" };
+    setMiaMsgs([...newMsgs, placeholder]);
+
+    try {
+      const res = await fetch(`${BASE}api/admin/mia/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-password": password },
+        body: JSON.stringify({ messages: newMsgs }),
+      });
+      if (!res.ok || !res.body) throw new Error("Failed");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let assembled = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        for (const line of chunk.split("\n")) {
+          if (!line.startsWith("data: ")) continue;
+          try {
+            const parsed = JSON.parse(line.slice(6)) as { content?: string; done?: boolean };
+            if (parsed.done) break;
+            if (parsed.content) {
+              assembled += parsed.content;
+              setMiaMsgs([...newMsgs, { role: "assistant", content: assembled }]);
+              setTimeout(() => { miaChatRef.current?.scrollTo({ top: miaChatRef.current.scrollHeight, behavior: "smooth" }); }, 10);
+            }
+          } catch { /* ignore */ }
+        }
+      }
+    } catch {
+      setMiaMsgs([...newMsgs, { role: "assistant", content: "Something went wrong — check server logs." }]);
+    } finally {
+      setMiaStreaming(false);
+    }
   }
 
   async function startPipeline() {
@@ -256,13 +310,13 @@ export default function AdminDashboard() {
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6">
-          {(["traffic", "pipeline"] as const).map((tab) => (
+          {(["traffic", "pipeline", "mia"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === tab ? "bg-primary text-black" : "bg-white/5 text-white/50 hover:text-white"}`}
             >
-              {tab === "traffic" ? "📊 Live Traffic" : "🤖 Mia Alphabet Pipeline"}
+              {tab === "traffic" ? "📊 Live Traffic" : tab === "pipeline" ? "🤖 Mia Alphabet Pipeline" : "💬 Talk to Mia"}
             </button>
           ))}
         </div>
@@ -507,6 +561,89 @@ export default function AdminDashboard() {
               )}
             </div>
 
+          </div>
+        )}
+
+        {/* ───── TAB: TALK TO MIA ───── */}
+        {activeTab === "mia" && (
+          <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden flex flex-col" style={{ height: "72vh" }}>
+            <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+              <div>
+                <p className="text-white font-semibold">Talk to Mia — Boss Mode</p>
+                <p className="text-white/40 text-xs mt-0.5">Private channel. Mia knows she's talking to her employer.</p>
+              </div>
+              <button
+                onClick={() => setMiaMsgs([])}
+                className="text-xs text-white/30 hover:text-white/60 border border-white/10 rounded px-2 py-1 transition-colors"
+              >
+                Clear
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div ref={miaChatRef} className="flex-1 overflow-y-auto p-5 space-y-4">
+              {miaMsgs.length === 0 && (
+                <div className="h-full flex flex-col items-center justify-center text-center gap-3">
+                  <div className="text-4xl">👋</div>
+                  <p className="text-white/60 text-sm font-medium">Hi boss. What do you need?</p>
+                  <div className="flex flex-wrap gap-2 justify-center mt-2">
+                    {[
+                      "How's the pipeline going?",
+                      "How many emails have we sent?",
+                      "Draft a follow-up email script",
+                      "What letters are done?",
+                    ].map((q) => (
+                      <button
+                        key={q}
+                        onClick={() => { setMiaInput(q); }}
+                        className="text-xs bg-white/5 border border-white/10 text-white/50 hover:text-white hover:border-white/30 rounded-lg px-3 py-1.5 transition-colors"
+                      >
+                        {q}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {miaMsgs.map((m, i) => (
+                <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <div
+                    className={`max-w-[78%] rounded-2xl px-4 py-3 text-sm whitespace-pre-wrap leading-relaxed ${
+                      m.role === "user"
+                        ? "bg-primary text-black font-medium"
+                        : "bg-white/10 text-white/90"
+                    }`}
+                  >
+                    {m.content || (miaStreaming && i === miaMsgs.length - 1 ? (
+                      <span className="inline-flex gap-1">
+                        <span className="animate-bounce">·</span>
+                        <span className="animate-bounce" style={{ animationDelay: "0.15s" }}>·</span>
+                        <span className="animate-bounce" style={{ animationDelay: "0.3s" }}>·</span>
+                      </span>
+                    ) : "")}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Input */}
+            <div className="px-4 py-3 border-t border-white/10 flex gap-2">
+              <input
+                type="text"
+                value={miaInput}
+                onChange={(e) => setMiaInput(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void sendMiaMessage(); } }}
+                placeholder="Ask Mia anything about the business…"
+                disabled={miaStreaming}
+                className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white placeholder:text-white/30 text-sm outline-none focus:border-primary disabled:opacity-50"
+              />
+              <button
+                onClick={() => void sendMiaMessage()}
+                disabled={miaStreaming || !miaInput.trim()}
+                className="bg-primary text-black font-bold px-4 py-2.5 rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-40 text-sm"
+              >
+                {miaStreaming ? "…" : "Send"}
+              </button>
+            </div>
           </div>
         )}
 
