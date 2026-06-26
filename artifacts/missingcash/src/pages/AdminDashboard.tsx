@@ -132,13 +132,21 @@ export default function AdminDashboard() {
   const [lastRefresh, setLastRefresh] = useState<Date | null>(null);
   const [loading, setLoading] = useState(false);
   const [pipelineMsg, setPipelineMsg] = useState("");
-  const [activeTab, setActiveTab] = useState<"traffic" | "pipeline" | "mia">("traffic");
+  const [activeTab, setActiveTab] = useState<"traffic" | "pipeline" | "mia" | "lab">("traffic");
 
   // Boss-mode Mia chat state
   const [miaMsgs, setMiaMsgs] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
   const [miaInput, setMiaInput] = useState("");
   const [miaStreaming, setMiaStreaming] = useState(false);
   const miaChatRef = useRef<HTMLDivElement>(null);
+
+  // Mia Lab state
+  const [labPrompt, setLabPrompt] = useState("");
+  const [labMessage, setLabMessage] = useState("");
+  const [labResponseA, setLabResponseA] = useState<{ prompt: string; response: string } | null>(null);
+  const [labResponseB, setLabResponseB] = useState<{ prompt: string; response: string } | null>(null);
+  const [labRunning, setLabRunning] = useState(false);
+  const [labMode, setLabMode] = useState<"boss" | "customer">("boss");
 
   const fetchData = useCallback(async (pw: string) => {
     setLoading(true);
@@ -236,6 +244,62 @@ export default function AdminDashboard() {
     }
   }
 
+  async function loadLabPrompt(mode: "boss" | "customer") {
+    setLabMode(mode);
+    setLabResponseA(null);
+    setLabResponseB(null);
+    try {
+      const res = await fetch(`${BASE}api/admin/mia/prompts`, { headers: { "x-admin-password": password } });
+      const json = await res.json() as { boss: string; customer: string };
+      setLabPrompt(mode === "boss" ? json.boss : json.customer);
+    } catch { /* ignore */ }
+  }
+
+  async function runLabTest() {
+    const msg = labMessage.trim();
+    const prompt = labPrompt.trim();
+    if (!msg || !prompt || labRunning) return;
+    setLabRunning(true);
+
+    const slot = labResponseA === null ? "A" : "B";
+    const setter = slot === "A" ? setLabResponseA : setLabResponseB;
+    setter({ prompt, response: "" });
+
+    try {
+      const res = await fetch(`${BASE}api/admin/mia/test`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-admin-password": password },
+        body: JSON.stringify({ systemPrompt: prompt, message: msg }),
+      });
+      if (!res.ok || !res.body) throw new Error("Failed");
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let assembled = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunk = decoder.decode(value, { stream: true });
+        for (const line of chunk.split("\n")) {
+          if (!line.startsWith("data: ")) continue;
+          try {
+            const parsed = JSON.parse(line.slice(6)) as { content?: string; done?: boolean };
+            if (parsed.done) break;
+            if (parsed.content) {
+              assembled += parsed.content;
+              setter({ prompt, response: assembled });
+            }
+          } catch { /* ignore */ }
+        }
+      }
+    } catch {
+      setter({ prompt, response: "❌ Something went wrong — check server logs." });
+    } finally {
+      setLabRunning(false);
+    }
+  }
+
   async function startPipeline() {
     setPipelineMsg("Starting…");
     try {
@@ -309,14 +373,17 @@ export default function AdminDashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-2 mb-6">
-          {(["traffic", "pipeline", "mia"] as const).map((tab) => (
+        <div className="flex gap-2 mb-6 flex-wrap">
+          {(["traffic", "pipeline", "mia", "lab"] as const).map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => {
+                setActiveTab(tab);
+                if (tab === "lab" && !labPrompt) void loadLabPrompt("boss");
+              }}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${activeTab === tab ? "bg-primary text-black" : "bg-white/5 text-white/50 hover:text-white"}`}
             >
-              {tab === "traffic" ? "📊 Live Traffic" : tab === "pipeline" ? "🤖 Mia Alphabet Pipeline" : "💬 Talk to Mia"}
+              {tab === "traffic" ? "📊 Live Traffic" : tab === "pipeline" ? "🤖 Pipeline" : tab === "mia" ? "💬 Talk to Mia" : "🧪 Mia Lab"}
             </button>
           ))}
         </div>
@@ -643,6 +710,117 @@ export default function AdminDashboard() {
               >
                 {miaStreaming ? "…" : "Send"}
               </button>
+            </div>
+          </div>
+        )}
+
+        {/* ───── TAB: MIA LAB ───── */}
+        {activeTab === "lab" && (
+          <div className="space-y-5">
+
+            {/* Header */}
+            <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+              <div className="flex items-start justify-between gap-4 flex-wrap">
+                <div>
+                  <p className="text-white font-semibold text-lg">🧪 Mia Training Lab</p>
+                  <p className="text-white/40 text-sm mt-1">
+                    Type a test message → Run → see her response. Edit the prompt → Run again → compare side by side.
+                  </p>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    onClick={() => void loadLabPrompt("boss")}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${labMode === "boss" ? "bg-primary text-black" : "bg-white/10 text-white/50 hover:text-white"}`}
+                  >
+                    Boss Mode
+                  </button>
+                  <button
+                    onClick={() => void loadLabPrompt("customer")}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${labMode === "customer" ? "bg-primary text-black" : "bg-white/10 text-white/50 hover:text-white"}`}
+                  >
+                    Customer Mode
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Test message input */}
+            <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+              <p className="text-xs text-white/40 uppercase tracking-widest mb-3">Test Message</p>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={labMessage}
+                  onChange={(e) => setLabMessage(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") void runLabTest(); }}
+                  placeholder={`e.g. "Hi, can you help me find money?" or "What did you do today?"`}
+                  disabled={labRunning}
+                  className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-2.5 text-white placeholder:text-white/30 text-sm outline-none focus:border-primary disabled:opacity-50"
+                />
+                <button
+                  onClick={() => void runLabTest()}
+                  disabled={labRunning || !labMessage.trim() || !labPrompt.trim()}
+                  className="bg-primary text-black font-bold px-5 py-2.5 rounded-xl hover:bg-primary/90 transition-colors disabled:opacity-40 text-sm whitespace-nowrap"
+                >
+                  {labRunning ? "Running…" : labResponseA === null ? "▶ Run" : "▶ Run Again"}
+                </button>
+                {(labResponseA || labResponseB) && (
+                  <button
+                    onClick={() => { setLabResponseA(null); setLabResponseB(null); }}
+                    className="text-xs text-white/30 hover:text-white/60 border border-white/10 rounded-xl px-3 py-2 transition-colors"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+              {labResponseA && !labResponseB && !labRunning && (
+                <p className="text-white/40 text-xs mt-3">✏️ Now edit the prompt below, then click <strong className="text-white/60">Run Again</strong> to compare side by side.</p>
+              )}
+            </div>
+
+            {/* Side-by-side responses */}
+            {(labResponseA || labResponseB) && (
+              <div className={`grid gap-4 ${labResponseB ? "grid-cols-2" : "grid-cols-1"}`}>
+                {labResponseA && (
+                  <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+                    <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
+                      <span className="text-xs font-bold text-white/60 uppercase tracking-widest">Response A</span>
+                      {labResponseB && <span className="text-[10px] text-white/30">Original prompt</span>}
+                    </div>
+                    <div className="p-4 text-sm text-white/80 whitespace-pre-wrap leading-relaxed min-h-[120px]">
+                      {labResponseA.response || <span className="text-white/30 animate-pulse">Generating…</span>}
+                    </div>
+                  </div>
+                )}
+                {labResponseB && (
+                  <div className="bg-primary/10 border border-primary/30 rounded-xl overflow-hidden">
+                    <div className="px-4 py-3 border-b border-primary/20 flex items-center justify-between">
+                      <span className="text-xs font-bold text-primary/80 uppercase tracking-widest">Response B</span>
+                      <span className="text-[10px] text-primary/40">Updated prompt</span>
+                    </div>
+                    <div className="p-4 text-sm text-white/80 whitespace-pre-wrap leading-relaxed min-h-[120px]">
+                      {labResponseB.response || <span className="text-white/30 animate-pulse">Generating…</span>}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Editable prompt */}
+            <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs text-white/40 uppercase tracking-widest">
+                  {labMode === "boss" ? "Boss Mode Prompt" : "Customer Mode Prompt"}
+                </p>
+                <span className="text-[10px] text-white/20">Edit here, then Run Again to see the difference</span>
+              </div>
+              <textarea
+                value={labPrompt}
+                onChange={(e) => setLabPrompt(e.target.value)}
+                rows={18}
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white/70 text-xs font-mono outline-none focus:border-primary resize-y leading-relaxed"
+                placeholder="Loading prompt…"
+              />
             </div>
           </div>
         )}

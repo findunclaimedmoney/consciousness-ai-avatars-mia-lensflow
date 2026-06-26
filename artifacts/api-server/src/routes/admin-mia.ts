@@ -2,7 +2,7 @@ import { Router, type IRouter } from "express";
 import { db } from "@workspace/db";
 import { prospectsTable, alphabetCrawlProgressTable } from "@workspace/db/schema";
 import { eq, count, sql } from "drizzle-orm";
-import { MIA_BOSS_PROMPT, MIA_BOSS_STATS_TOOL } from "../lib/mia-knowledge";
+import { MIA_BOSS_PROMPT, MIA_SYSTEM_PROMPT, MIA_BOSS_STATS_TOOL } from "../lib/mia-knowledge";
 import { logger } from "../lib/logger";
 
 const router: IRouter = Router();
@@ -206,6 +206,87 @@ router.post("/admin/mia/chat", async (req, res): Promise<void> => {
     if (clientGone()) return;
     logger.error({ err }, "Admin Mia chat failed");
     write("Something went wrong. Check server logs.");
+    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    res.end();
+  }
+});
+
+// GET /api/admin/mia/prompts — return current prompts so the lab can pre-fill them
+router.get("/admin/mia/prompts", (req, res): void => {
+  if (!checkAuth(req)) { res.status(401).json({ error: "Unauthorised" }); return; }
+  res.json({ boss: MIA_BOSS_PROMPT, customer: MIA_SYSTEM_PROMPT });
+});
+
+// POST /api/admin/mia/test — run any custom system prompt + message, stream the response
+router.post("/admin/mia/test", async (req, res): Promise<void> => {
+  if (!checkAuth(req)) { res.status(401).json({ error: "Unauthorised" }); return; }
+
+  const body = req.body as { systemPrompt?: string; message?: string };
+  if (!body.systemPrompt || !body.message) {
+    res.status(400).json({ error: "systemPrompt and message are required" });
+    return;
+  }
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  let gone = false;
+  res.on("close", () => { if (!res.writableEnded) gone = true; });
+  const clientGone = () => gone;
+  const write = (content: string) => {
+    if (!clientGone() && !res.writableEnded) res.write(`data: ${JSON.stringify({ content })}\n\n`);
+  };
+
+  const integrationBase = process.env.AI_INTEGRATIONS_OPENAI_BASE_URL;
+  const integrationKey = process.env.AI_INTEGRATIONS_OPENAI_API_KEY;
+  const directKey = process.env.OPENAI_API_KEY;
+  const useIntegration = !!(integrationBase && integrationKey);
+  const useDirect = !useIntegration && !!directKey;
+
+  if (!useIntegration && !useDirect) {
+    write("No AI credentials configured.");
+    res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+    res.end();
+    return;
+  }
+
+  try {
+    const { default: OpenAI } = await import("openai");
+    const openai = useIntegration
+      ? new OpenAI({ baseURL: integrationBase, apiKey: integrationKey })
+      : new OpenAI({ apiKey: directKey });
+
+    const controller = new AbortController();
+    res.on("close", () => controller.abort());
+
+    const stream = await openai.chat.completions.create(
+      {
+        model: useIntegration ? "gpt-5.4" : "gpt-4o-mini",
+        max_completion_tokens: 2048,
+        messages: [
+          { role: "system", content: body.systemPrompt },
+          { role: "user", content: body.message },
+        ],
+        stream: true,
+      },
+      { signal: controller.signal },
+    );
+
+    for await (const chunk of stream) {
+      if (clientGone()) break;
+      const content = chunk.choices[0]?.delta?.content;
+      if (content) write(content);
+    }
+
+    if (!clientGone()) {
+      res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+      res.end();
+    }
+  } catch (err) {
+    if (clientGone()) return;
+    logger.error({ err }, "Mia test run failed");
+    write("Something went wrong — check server logs.");
     res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
     res.end();
   }
