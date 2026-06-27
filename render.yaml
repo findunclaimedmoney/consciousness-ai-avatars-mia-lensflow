@@ -3,5 +3,5 @@ services:
     name: missingcash
     env: node
     plan: standard
-    buildCommand: pnpm install && pnpm run build
+      buildCommand: pnpm install && pnpm --filter @workspace/missingcash... --filter @workspace/api-server... run build
     startCommand: cd artifacts/api-server && node --enable-source-maps ./dist/index.mjs
