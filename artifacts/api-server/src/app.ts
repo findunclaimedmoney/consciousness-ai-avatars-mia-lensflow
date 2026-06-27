@@ -4,6 +4,7 @@ import pinoHttp from "pino-http";
 import router from "./routes";
 import stripeWebhookRouter from "./routes/stripe-webhook";
 import { logger } from "./lib/logger";
+import path from "path";
 
 const app: Express = express();
 
@@ -35,5 +36,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
+
+const clientDir = path.join(import.meta.dirname, "public");
+app.use(express.static(clientDir));
+app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api")) return next();
+    res.sendFile(path.join(clientDir, "index.html"));
+});
+
 
 export default app;
