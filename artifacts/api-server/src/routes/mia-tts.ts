@@ -4,7 +4,7 @@ import { MiaTtsBody } from "@workspace/api-zod";
 const router: IRouter = Router();
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX = 30;
+const RATE_LIMIT_MAX = 60;
 const hits = new Map<string, number[]>();
 
 function rateLimit(req: Request, res: Response, next: NextFunction): void {

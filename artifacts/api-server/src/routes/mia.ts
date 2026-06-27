@@ -11,7 +11,7 @@ import { loadMemory, saveMemory } from "../lib/mia-memory";
 const router: IRouter = Router();
 
 const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX = 15;
+const RATE_LIMIT_MAX = 60;
 const hits = new Map<string, number[]>();
 
 const SITE_BASE = process.env.REPLIT_DOMAINS
