@@ -134,11 +134,11 @@ export default function Home() {
                 <div className="bg-white rounded-xl px-5 py-3 shadow-sm">
                   <img src="/stratton-logo.png" alt="Stratton Finance" className="h-8 w-auto" />
                 </div>
-                <div className="bg-white rounded-2xl px-8 py-5 flex flex-col items-center gap-3 shadow-xl border-2 border-[#007A33] min-w-[160px]">
-                  <img src="/bp-logo.svg" alt="BP" className="h-20 w-auto object-contain" />
-                  <span className="font-black text-[#007A33] text-5xl leading-none">$100</span>
-                  <div className="w-full h-px bg-[#007A33]/30" />
-                  <span className="font-bold text-[#007A33] text-xs tracking-[0.2em] uppercase">MISSING CASH</span>
+                <div className="bg-white rounded-2xl px-8 py-5 flex flex-col items-center gap-3 shadow-xl border-2 border-primary min-w-[160px]">
+                  <span className="text-5xl">🎁</span>
+                  <span className="font-black text-primary text-5xl leading-none">$100</span>
+                  <div className="w-full h-px bg-primary/30" />
+                  <span className="font-bold text-primary text-xs tracking-[0.2em] uppercase">MISSING CASH</span>
                 </div>
               </div>
               <div className="text-center sm:text-left flex-1 min-w-0">
