@@ -159,6 +159,19 @@ async function scrapeForName(
   return { matches: allMatches, pagesScanned };
 }
 
+export async function searchMoneySmartBySurname(surname: string): Promise<MoneySmartMatch[]> {
+  const apiKey = process.env.SCRAPINGBEE_API_KEY;
+  if (!apiKey) return [];
+
+  try {
+    const { matches } = await scrapeForName(surname, apiKey);
+    return matches;
+  } catch (err) {
+    logger.error({ err, surname }, "MoneySmart surname scrape failed");
+    return [];
+  }
+}
+
 export async function searchMoneySmart(opts: ScrapeOptions): Promise<MoneySmartResults> {
   const apiKey = process.env.SCRAPINGBEE_API_KEY;
 

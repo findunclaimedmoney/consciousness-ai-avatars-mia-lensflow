@@ -6,6 +6,7 @@ import Stripe from "stripe";
 import twilio from "twilio";
 import { logger } from "./logger";
 import { findContact, parseName } from "./contact-finder";
+import { searchMoneySmartBySurname } from "./moneysmart-scraper";
 
 const MAX_PAGES = 60;
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
@@ -127,38 +128,29 @@ async function crawlMoneySmartLetter(letter: string, _apiKey: string): Promise<{
   const seen = new Set<string>();
 
   for (const surname of surnames) {
-    logger.info({ letter, surname }, "alphabet-scraper: fetching WA unclaimed monies");
+    logger.info({ letter, surname }, "alphabet-scraper: fetching MoneySmart national register");
 
-    let totalHits = -1;
-    let from = 0;
+    const results = await searchMoneySmartBySurname(surname);
+    totalPages++;
 
-    while (from / WA_PAGE_SIZE < MAX_PAGES) {
-      const result = await fetchWAPage(surname, from);
-
-      if (!result) {
-        logger.warn({ letter, surname, from }, "alphabet-scraper: WA API returned null, skipping surname");
-        break;
+    for (const m of results) {
+      const key = `${m.name.toLowerCase()}|${m.amount}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        allMatches.push({
+          name: m.name,
+          amount: m.amount,
+          holder: m.holder,
+          state: m.state,
+          description: "",
+          holderEmail: "",
+          holderPhone: "",
+          holderContactName: "",
+        });
       }
-
-      if (from === 0) totalHits = result.total;
-      totalPages++;
-
-      for (const m of result.items) {
-        const key = `${m.name.toLowerCase()}|${m.amount}`;
-        if (!seen.has(key)) {
-          seen.add(key);
-          allMatches.push(m);
-        }
-      }
-
-      if (result.items.length === 0) break;
-      from += WA_PAGE_SIZE;
-      if (totalHits >= 0 && from >= totalHits) break;
-
-      await new Promise((r) => setTimeout(r, 300));
     }
 
-    await new Promise((r) => setTimeout(r, 500));
+    await new Promise((r) => setTimeout(r, 1000));
   }
 
   return { matches: allMatches, pages: totalPages };
