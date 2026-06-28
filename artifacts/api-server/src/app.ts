@@ -39,9 +39,14 @@ app.use("/api", router);
 
 const clientDir = path.join(import.meta.dirname, "public");
 app.use(express.static(clientDir));
+// Serve SPA index.html for non-API GET/HEAD requests (avoid Express 5 wildcard route issues)
 app.use((req, res, next) => {
     if (req.path.startsWith("/api")) return next();
-    res.sendFile(path.join(clientDir, "index.html"));
+    // Only respond to GET and HEAD to avoid interfering with other HTTP methods
+    if (req.method !== "GET" && req.method !== "HEAD") return next();
+    res.sendFile(path.join(clientDir, "index.html"), (err) => {
+      if (err) return next(err);
+    });
 });
 
 
