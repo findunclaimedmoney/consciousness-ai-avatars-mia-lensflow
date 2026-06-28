@@ -461,3 +461,9 @@ id = "z0qQoKfKu6i2IbJTHDYkM"
 uri = "file://handover.md"
 type = "text"
 title = "MissingCash Agent Handover — Updated 26 Jun 2026"
+
+[[outputs]]
+id = "nnUe-u-gjh5tLFjJ-B65y"
+uri = "file://.local/handovers/2026-06-28-mia-best-day.md"
+type = "text"
+title = "Mia — Best Day Handover · 28 June 2026"
