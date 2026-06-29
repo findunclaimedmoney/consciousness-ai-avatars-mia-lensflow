@@ -31,13 +31,13 @@ const AVATAR_VIDEOS = [
 ];
 
 const WELCOME =
-  "Hi, I'm Mia — your MissingCash assistant. I can help you search for unclaimed money, walk you through the claim process, or answer questions about finance with our partner Stratton Finance. What would you like to know?";
+  "Hi, I'm Mia! I search Australian databases for unclaimed money in your name — right now, for free. Just give me your full name and I'll get started. 👇";
 
 const SUGGESTIONS = [
-  "How do I find unclaimed money?",
-  "Is the search really free?",
-  "Tell me about car loans",
-  "How does claiming work?",
+  "Search my name now",
+  "How does the search work?",
+  "Is it really free?",
+  "Car loans with Stratton",
 ];
 
 function renderMessage(content: string) {
